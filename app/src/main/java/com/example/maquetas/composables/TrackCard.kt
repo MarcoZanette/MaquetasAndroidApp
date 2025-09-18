@@ -3,6 +3,7 @@ package com.example.maquetas.composables
 import android.R
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -21,10 +22,10 @@ import com.example.maquetas.models.Track
 
 
 @Composable
-fun TrackCard(track: Track,cardOnClick:()->Unit){
+fun TrackCard(track: Track,modifier:Modifier=Modifier){
 
     Box(
-        modifier = Modifier.border(width = 2.dp, shape = RectangleShape, color = MaterialTheme.colorScheme.secondary),
+        modifier = modifier.border(width = 2.dp, shape = RectangleShape, color = MaterialTheme.colorScheme.secondary),
     ) {
 
         Surface (color = MaterialTheme.colorScheme.surface) {
@@ -51,6 +52,9 @@ fun TrackCard(track: Track,cardOnClick:()->Unit){
 private fun TCPrev() {
     val t= Track("Track1")
 
-    TrackCard(t,{})
+    TrackCard(
+        track = t,
+        modifier = TODO()
+    )
 
 }

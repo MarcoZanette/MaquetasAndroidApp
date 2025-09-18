@@ -4,8 +4,10 @@ import android.view.MenuItem
 import android.view.Surface
 import androidx.annotation.ColorRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -52,14 +54,24 @@ fun MenuBar(content:@Composable RowScope.()->Unit) {//cambiar content por una li
 
 }
 
+@Composable
+fun RowScope.MenuItem(modifier:Modifier=Modifier, content:@Composable BoxScope.()->Unit){
+    Box(modifier=modifier
+        .fillMaxHeight(1f)
+        .aspectRatio(1f))
+    {
+        content()
+    }
+}
+
 
 @Composable
-fun RowScope.MenuItem(painter: Painter,onClick:()->Unit){//recibe una funcion como parametro
+fun RowScope.MenuItem(modifier:Modifier=Modifier,painter: Painter,onClick:()->Unit){//recibe una funcion como parametro
 
 
         IconButton(
             onClick = onClick,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxHeight(1f)
                 .aspectRatio(ratio = 1f)
         ) {
@@ -68,7 +80,7 @@ fun RowScope.MenuItem(painter: Painter,onClick:()->Unit){//recibe una funcion co
     }
 
 @Composable
-fun RowScope.MenuItem(text:String,onClick:()->Unit){//recibe una funcion como parametro
+fun RowScope.MenuItem(modifier:Modifier=Modifier,text:String,onClick:()->Unit){//recibe una funcion como parametro
 
 
     TextButton(
@@ -90,9 +102,14 @@ fun Menu(){
     MaquetasTheme {
         Column {
             MenuBar {
-                MenuItem(painter = painterResource(R.drawable.ic_launcher_background), onClick = {})
-                MenuItem(painter = painterResource(R.drawable.ic_launcher_foreground), onClick = {})
-                MenuItem(text="NEW") { }
+                MenuItem {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_launcher_foreground),
+                        contentDescription = ""
+                    )
+                }
+
+                MenuItem(text="text",modifier=Modifier){}
             }
 
         }

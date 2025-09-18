@@ -27,12 +27,8 @@ class MenuView {
             Surface(color = colorResource(R.color.white)) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     MenuBar {
-                        MenuItem(painter = painterResource(R.drawable.ic_launcher_foreground)) {
-                            //onclick
-                        }
-                        MenuItem(text = "New") {
-                            onCreateNewProject()
-                        }
+                        MenuItem(painter = painterResource(R.drawable.ic_launcher_foreground), onClick = {})
+                        MenuItem(text="New"){onCreateNewProject}
                     }
                     ProjectCard(pd) { projectData ->
                         //navegar enviando la projectData como parametro

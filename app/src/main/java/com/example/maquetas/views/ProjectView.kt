@@ -1,10 +1,18 @@
 package com.example.maquetas.views
 
+import android.graphics.Paint
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.tappableElementIgnoringVisibility
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -15,32 +23,83 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.maquetas.models.Project
 import com.example.maquetas.R
 import com.example.maquetas.composables.MenuBar
 import com.example.maquetas.composables.MenuItem
+import com.example.maquetas.viewmodels.ProjectViewModel
+import com.example.maquetas.viewmodels.ProjectViewmodelFactory
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.maquetas.composables.TrackCard
+import com.example.maquetas.models.Track
 
 class ProjectView {
 
     @Composable
-    fun MainProjectView(project: Project,onNavigateUp:()->Unit){
-        var panelIsHidden by remember { mutableStateOf(true) }
+    fun MainProjectView(project: Project,onNavigateUp:()->Unit){//agregar viewmodel
+
+        val viewmodel= viewModel<ProjectViewModel>(factory= ProjectViewmodelFactory(project = project))//Borre dependencias, puede no funcionar
+
+        var panelIsHidden by remember { mutableStateOf(true) }//TODO pasar al viewmodel
         var panelSize by remember{ mutableFloatStateOf(0.5f) }
 
+        val iconModifier=Modifier.fillMaxSize().aspectRatio(1f)
         Surface(color = colorResource(R.color.white)) {
             Column (modifier= Modifier.fillMaxSize()){
                 MenuBar {
-                    MenuItem(painter = painterResource(R.drawable.ic_launcher_foreground)) {
-                        //onclick
-                        onNavigateUp()
-                    }
-                }
+                    MenuItem { Icon(
+                        painter = painterResource(R.drawable.arrow_back),
+                        contentDescription = stringResource(R.string.arrow_back),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {onNavigateUp()})
+                    ) }
+                    MenuItem { Icon(
+                        painter=painterResource(R.drawable.record),
+                        contentDescription = stringResource(R.string.record),
+                        tint=MaterialTheme.colorScheme.onSurface,
+                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {})
+                    ) }
+                    MenuItem{Icon(
+                        painter=painterResource(R.drawable.import_file),
+                        contentDescription = stringResource(R.string.import_file),
+                        tint= MaterialTheme.colorScheme.onSurface,
+                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {})
+                    )}
+                    MenuItem{Icon(
+                        painter=painterResource(R.drawable.export_file),
+                        contentDescription = stringResource(R.string.export_file),
+                        tint= MaterialTheme.colorScheme.onSurface,
+                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {})
+                    )}
+                    MenuItem{Icon(
+                        painter =painterResource(R.drawable.play),
+                        contentDescription = stringResource(R.string.play),
+                        tint= MaterialTheme.colorScheme.onSurface,
+                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {})
+                    )}
+                    MenuItem{Icon(
+                        painter=painterResource(R.drawable.add),
+                        contentDescription = stringResource(R.string.addTrack),
+                        tint= MaterialTheme.colorScheme.onSurface,
+                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {
+                            //TODO popup donde el usuario escribira el nombre del nuevo track, por defecto Track+tracklistlength
+                            //Se utilizara un newItemPopup
+                        })
+                    )}
 
+
+                }
 
 
 
@@ -48,9 +107,11 @@ class ProjectView {
                     LazyColumn(modifier =
                         Modifier.animateContentSize()
                         .fillMaxSize(if (panelIsHidden) 0.95f else (1f - panelSize))) {
-                            //items(){
-                    //columna de las pistas
-                    // }
+                            items(viewmodel.trackList)
+                            {
+                                item->
+                                TrackCard(track=item,modifier=Modifier.clickable(onClick = {viewmodel.selectedTrack=item.fileName}))
+                            }
 
                     }
 
@@ -91,6 +152,7 @@ class ProjectView {
     @Composable
     fun PvPreview(){
         var pd= Project("Example")
+        pd.trackList=mutableListOf<Track>(Track("asd"),Track("asd2"))
         MainProjectView(pd, onNavigateUp = {})
     }
 
