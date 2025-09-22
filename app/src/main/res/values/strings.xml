@@ -6,4 +6,8 @@
     <string name="export_file">Export file</string>
     <string name="play">Play</string>
     <string name="addTrack">Create new track</string>
+    <string name="confirmButton">Confirmar</string>
+    <string name="dismissButton">Cancelar</string>
+    <string name="createNewTrackTitle">Crear Nueva Pista</string>
+    <string name="createNewTrackText">Desea crear una nueva pista?</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.maquetas.views
 
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.tappableElementIgnoringVisibility
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -41,20 +43,33 @@ import com.example.maquetas.viewmodels.ProjectViewmodelFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.maquetas.composables.NewItemPopup
 import com.example.maquetas.composables.TrackCard
 import com.example.maquetas.models.Track
 
 class ProjectView {
 
     @Composable
-    fun MainProjectView(project: Project,onNavigateUp:()->Unit){//agregar viewmodel
+    fun MainProjectView(project: Project,onNavigateUp:()->Unit){
 
         val viewmodel= viewModel<ProjectViewModel>(factory= ProjectViewmodelFactory(project = project))//Borre dependencias, puede no funcionar
+        var showNewTrackPopup by remember { mutableStateOf(false) }
 
-        var panelIsHidden by remember { mutableStateOf(true) }//TODO pasar al viewmodel
-        var panelSize by remember{ mutableFloatStateOf(0.5f) }
+        NewItemPopup(
+            title = stringResource(R.string.createNewTrackTitle),
+            text = stringResource(R.string.createNewTrackText),
+            showDialog = showNewTrackPopup,
+            onDismiss = {
+                showNewTrackPopup=false},
+            onConfirm = {
+                showNewTrackPopup=false
+                project.addNewTrack(viewmodel.newTrackName.text.toString())},
+            state = viewmodel.newTrackName
+        )
 
-        val iconModifier=Modifier.fillMaxSize().aspectRatio(1f)
+        val iconModifier=Modifier
+            .fillMaxSize()
+            .aspectRatio(1f)
         Surface(color = colorResource(R.color.white)) {
             Column (modifier= Modifier.fillMaxSize()){
                 MenuBar {
@@ -62,40 +77,55 @@ class ProjectView {
                         painter = painterResource(R.drawable.arrow_back),
                         contentDescription = stringResource(R.string.arrow_back),
                         tint = MaterialTheme.colorScheme.onSurface,
-                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {onNavigateUp()})
+                        modifier=iconModifier
+                            .align(Alignment.Center)
+                            .clickable(onClick = { onNavigateUp() })
                     ) }
                     MenuItem { Icon(
                         painter=painterResource(R.drawable.record),
                         contentDescription = stringResource(R.string.record),
                         tint=MaterialTheme.colorScheme.onSurface,
-                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {})
+                        modifier=iconModifier
+                            .align(Alignment.Center)
+                            .clickable(onClick = {})
                     ) }
                     MenuItem{Icon(
                         painter=painterResource(R.drawable.import_file),
                         contentDescription = stringResource(R.string.import_file),
                         tint= MaterialTheme.colorScheme.onSurface,
-                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {})
+                        modifier=iconModifier
+                            .align(Alignment.Center)
+                            .clickable(onClick = {})
                     )}
                     MenuItem{Icon(
                         painter=painterResource(R.drawable.export_file),
                         contentDescription = stringResource(R.string.export_file),
                         tint= MaterialTheme.colorScheme.onSurface,
-                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {})
+                        modifier=iconModifier
+                            .align(Alignment.Center)
+                            .clickable(onClick = {})
                     )}
                     MenuItem{Icon(
                         painter =painterResource(R.drawable.play),
                         contentDescription = stringResource(R.string.play),
                         tint= MaterialTheme.colorScheme.onSurface,
-                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {})
+                        modifier=iconModifier
+                            .align(Alignment.Center)
+                            .clickable(onClick = {})
                     )}
                     MenuItem{Icon(
                         painter=painterResource(R.drawable.add),
                         contentDescription = stringResource(R.string.addTrack),
                         tint= MaterialTheme.colorScheme.onSurface,
-                        modifier=iconModifier.align(Alignment.Center).clickable(onClick = {
-                            //TODO popup donde el usuario escribira el nombre del nuevo track, por defecto Track+tracklistlength
-                            //Se utilizara un newItemPopup
-                        })
+                        modifier=iconModifier
+                            .align(Alignment.Center)
+                            .clickable(onClick = {
+                                //TODO popup donde el usuario escribira el nombre del nuevo track, por defecto Track+tracklistlength
+                                val defaultName = project.trackList.size
+                                showNewTrackPopup = true
+
+
+                            })
                     )}
 
 
@@ -105,8 +135,9 @@ class ProjectView {
 
                 Column(modifier=Modifier.fillMaxSize()) {
                     LazyColumn(modifier =
-                        Modifier.animateContentSize()
-                        .fillMaxSize(if (panelIsHidden) 0.95f else (1f - panelSize))) {
+                        Modifier
+                            .animateContentSize()
+                            .fillMaxSize(if (!viewmodel.showPanel.value) 0.95f else (1f - viewmodel.panelSize.floatValue))) {
                             items(viewmodel.trackList)
                             {
                                 item->
@@ -119,7 +150,7 @@ class ProjectView {
                         //fila de los controles de volumen
                         Surface (color= MaterialTheme.colorScheme.secondary){
                             Column {
-                                TextButton(onClick = {panelIsHidden=!panelIsHidden})
+                                TextButton(onClick = {viewmodel.showPanel.value=!viewmodel.showPanel.value})
                                     {Text(text="Hide/Show",color=MaterialTheme.colorScheme.onSecondary)}
 
                                 Surface(
@@ -157,5 +188,6 @@ class ProjectView {
     }
 
 
-
 }
+
+
