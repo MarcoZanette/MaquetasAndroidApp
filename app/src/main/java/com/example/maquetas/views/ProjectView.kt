@@ -63,7 +63,13 @@ class ProjectView {
                 showNewTrackPopup=false},
             onConfirm = {
                 showNewTrackPopup=false
-                project.addNewTrack(viewmodel.newTrackName.text.toString())},
+                project.addNewTrack(viewmodel.newTrackName.text.toString())
+                viewmodel.addNewTrack(project.trackList[project.trackList.size-1])
+                Log.println(Log.DEBUG,"ViewmodelInfo","ViewmodelTrackListSize: "+viewmodel.trackList.size)
+                Log.println(Log.DEBUG,"ProjectInfo","ProjectTrackListSize: "+project.trackList.size)
+
+
+                        },
             state = viewmodel.newTrackName
         )
 
@@ -141,7 +147,7 @@ class ProjectView {
                             items(viewmodel.trackList)
                             {
                                 item->
-                                TrackCard(track=item,modifier=Modifier.clickable(onClick = {viewmodel.selectedTrack=item.fileName}))
+                                TrackCard(track=item.value,modifier=Modifier.clickable(onClick = {viewmodel.selectedTrack=item.value.fileName}))
                             }
 
                     }
