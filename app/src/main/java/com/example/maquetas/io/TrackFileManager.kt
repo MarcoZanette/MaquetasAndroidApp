@@ -1,5 +1,6 @@
 package com.example.maquetas.io
 
+import com.example.maquetas.models.Take
 import com.example.maquetas.models.Track
 import java.io.File
 
@@ -15,5 +16,9 @@ class TrackFileManager(track: Track): FileManager() {
 
     override fun format(){
 
+    }
+
+    fun getTrackList():MutableList<Take> {
+        TODO("Not yet implemented")
     }
 }

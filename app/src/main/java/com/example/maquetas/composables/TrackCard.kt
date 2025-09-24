@@ -1,6 +1,5 @@
 package com.example.maquetas.composables
 
-import android.R
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,10 +21,18 @@ import com.example.maquetas.models.Track
 
 
 @Composable
-fun TrackCard(track: Track,modifier:Modifier=Modifier){
+fun TrackCard(track: Track,modifier:Modifier=Modifier,isSelected:Boolean=false){
+
+
+    var boxModifier=modifier.border(width = 2.dp, shape = RectangleShape, color = MaterialTheme.colorScheme.outline)
+
+    if(isSelected){
+        boxModifier=modifier.border(width = 4.dp, shape = RectangleShape, color = MaterialTheme.colorScheme.outlineVariant)
+
+    }
 
     Box(
-        modifier = modifier.border(width = 2.dp, shape = RectangleShape, color = MaterialTheme.colorScheme.secondary),
+        modifier = boxModifier,
     ) {
 
         Surface (color = MaterialTheme.colorScheme.surface) {
@@ -43,6 +50,7 @@ fun TrackCard(track: Track,modifier:Modifier=Modifier){
             }
         }
     }
+
 
 }
 

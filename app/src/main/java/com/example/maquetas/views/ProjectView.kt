@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.tappableElementIgnoringVisibility
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Icon
@@ -65,11 +66,7 @@ class ProjectView {
                 showNewTrackPopup=false
                 project.addNewTrack(viewmodel.newTrackName.text.toString())
                 viewmodel.addNewTrack(project.trackList[project.trackList.size-1])
-                Log.println(Log.DEBUG,"ViewmodelInfo","ViewmodelTrackListSize: "+viewmodel.trackList.size)
-                Log.println(Log.DEBUG,"ProjectInfo","ProjectTrackListSize: "+project.trackList.size)
-
-
-                        },
+                },
             state = viewmodel.newTrackName
         )
 
@@ -93,7 +90,15 @@ class ProjectView {
                         tint=MaterialTheme.colorScheme.onSurface,
                         modifier=iconModifier
                             .align(Alignment.Center)
-                            .clickable(onClick = {})
+                            .clickable(onClick = {
+                                if (project.recordReady) {
+                                    project.record(viewmodel.selectedTrack.intValue)
+                                }else//TODO parar la grabacion
+                                {}
+                            }
+
+
+                            )
                     ) }
                     MenuItem{Icon(
                         painter=painterResource(R.drawable.import_file),
@@ -144,10 +149,18 @@ class ProjectView {
                         Modifier
                             .animateContentSize()
                             .fillMaxSize(if (!viewmodel.showPanel.value) 0.95f else (1f - viewmodel.panelSize.floatValue))) {
-                            items(viewmodel.trackList)
+                            itemsIndexed(viewmodel.trackList)
                             {
-                                item->
-                                TrackCard(track=item,modifier=Modifier.clickable(onClick = {viewmodel.selectedTrack=item.fileName}))
+                                index, item->
+                                TrackCard(
+                                    isSelected = viewmodel.selectedTrack.intValue==index,
+                                    track = item,
+                                    modifier = Modifier.clickable(onClick = {
+                                        viewmodel.selectedTrack.intValue =index
+                                    }
+                                    )
+
+                                )
                             }
 
                     }
@@ -192,8 +205,4 @@ class ProjectView {
         pd.trackList=mutableListOf<Track>(Track("asd"),Track("asd2"))
         MainProjectView(pd, onNavigateUp = {})
     }
-
-
 }
-
-

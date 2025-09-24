@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
@@ -17,7 +18,7 @@ class ProjectViewModel(project: Project): ViewModel() {
     var projectName=project.fileName
     var trackList=project.trackList.toMutableStateList()//Solamente notifica si se añaden o se quitan items en la lista, para actualizar los elementos en si deberia borrar y volver a añadir el mismo elemento
 
-    var selectedTrack:String=""
+    var selectedTrack= mutableIntStateOf(-1)
     var showPanel=mutableStateOf(false)
     var panelSize= mutableFloatStateOf(0.5f)
     var newTrackName= TextFieldState()
