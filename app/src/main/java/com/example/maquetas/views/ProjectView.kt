@@ -147,7 +147,7 @@ class ProjectView {
                             items(viewmodel.trackList)
                             {
                                 item->
-                                TrackCard(track=item.value,modifier=Modifier.clickable(onClick = {viewmodel.selectedTrack=item.value.fileName}))
+                                TrackCard(track=item,modifier=Modifier.clickable(onClick = {viewmodel.selectedTrack=item.fileName}))
                             }
 
                     }
