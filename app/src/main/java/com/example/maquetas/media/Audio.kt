@@ -8,7 +8,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
-class Recorder(context: Context): MediaRecorder()
+class Recorder(): MediaRecorder()
 {
     fun start(outputFile: File){
 
@@ -38,7 +38,7 @@ class Recorder(context: Context): MediaRecorder()
 
 }
 
-class Player(var context:Context):MediaPlayer(){
+class Player():MediaPlayer(){
 
     fun play(file:File){
         //create(context,file.toUri())
