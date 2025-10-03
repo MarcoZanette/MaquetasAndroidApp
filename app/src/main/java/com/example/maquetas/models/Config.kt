@@ -1,11 +1,12 @@
 package com.example.maquetas.models
 
 import android.content.Context
+import com.example.maquetas.io.ConfigString
 import java.io.File
 
 class Config(context: Context) {
 
-    val defaultProjectsDir:File=File(context.filesDir.toString() + "projects")
+    private val defaultProjectsDir:File=File(context.filesDir.toString() + "projects")
 
     val configFile=File(context.filesDir.toString()+"config")
 
@@ -25,7 +26,15 @@ class Config(context: Context) {
     }
 
     private fun readConfigFile(configFile: File) {
-        TODO("Not yet implemented")
+        val reader=configFile.reader()
+        val configText=reader.readText()
+
+        val configString= ConfigString(configText)
+        val pDir=configString.search("projectsDir")!!
+
+
+        projectsDir=File(pDir)
+
     }
 
     private fun createConfigFile(configFile: File) {
