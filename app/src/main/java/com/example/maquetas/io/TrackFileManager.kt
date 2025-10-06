@@ -8,6 +8,17 @@ class TrackFileManager(track: Track): FileManager() {//esta clase se debe ocupar
     var temp=track//TODO borrar, solo sirgve para el return de la funcion load()
     lateinit var trackDir: File //cambiar en el constructor
 
+    init{
+
+        if(track.filePath!=null)
+        {
+            trackDir = track.filePath
+        }
+        else{
+
+        }
+    }
+
     override fun save(){
 
     }

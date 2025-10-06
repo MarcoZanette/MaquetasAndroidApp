@@ -1,5 +1,6 @@
 package com.example.maquetas.models
 
+import android.content.Context
 import com.example.maquetas.io.ProjectFileManager
 import com.example.maquetas.models.ProjectObject
 import java.io.File
@@ -10,6 +11,11 @@ class Project(val fileName:String="", val filePath: File?=null,val projectName:S
     var recordReady=true
     var isFav=false
 
+    constructor(fileName:String,context: Context,projectName:String):this( //constructor para cuando no elijo un path especifico, generalmente si creo un nuevo proyecto sin seleccionar un path
+        fileName = fileName,
+        filePath = File("context.cacheDir$projectName"),
+        projectName = projectName
+    )
 
 
     fun addNewTrack(name:String){
@@ -26,6 +32,11 @@ class Project(val fileName:String="", val filePath: File?=null,val projectName:S
 
         trackList[selectedTrack]=track
 
+    }
+
+    fun stopRecording(selectedTrack: Int){
+        trackList[selectedTrack].stopRecording()
+        recordReady=true
     }
 
 
