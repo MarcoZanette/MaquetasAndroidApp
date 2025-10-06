@@ -1,5 +1,7 @@
 package com.example.maquetas.views
 
+import android.Manifest
+import android.content.Context
 import android.graphics.Paint
 import android.util.Log
 import androidx.compose.animation.animateContentSize
@@ -34,6 +36,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.maquetas.models.Project
 import com.example.maquetas.R
@@ -48,10 +51,12 @@ import com.example.maquetas.composables.NewItemPopup
 import com.example.maquetas.composables.TrackCard
 import com.example.maquetas.models.Track
 
-class ProjectView {
+class ProjectView (val context:Context){
+
+    private var recordingTrack=-1
 
     @Composable
-    fun MainProjectView(project: Project,onNavigateUp:()->Unit){
+    fun MainProjectView(project: Project,onNavigateUp:()->Unit,requestPermission:(permission:String)->Unit){
 
         val viewmodel= viewModel<ProjectViewModel>(factory= ProjectViewmodelFactory(project = project))//Borre dependencias, puede no funcionar
         var showNewTrackPopup by remember { mutableStateOf(false) }
@@ -92,9 +97,26 @@ class ProjectView {
                             .align(Alignment.Center)
                             .clickable(onClick = {
                                 if (project.recordReady) {
-                                    project.record(viewmodel.selectedTrack.intValue)
-                                }else//TODO parar la grabacion
-                                {}
+                                    requestPermission(Manifest.permission.RECORD_AUDIO)
+
+                                    try {
+                                        project.record(viewmodel.selectedTrack.intValue)
+                                        recordingTrack = viewmodel.selectedTrack.intValue
+                                    } catch (e: Exception) {
+                                        e.printStackTrace()
+                                    }
+
+                                } else//TODO parar la grabacion
+                                {
+                                    try
+                                    {
+                                        project.stopRecording(recordingTrack)
+                                        recordingTrack = -1
+                                    }
+                                    catch (e:Exception){
+                                        e.printStackTrace()
+                                    }
+                                }
                             }
 
 
@@ -187,22 +209,14 @@ class ProjectView {
 
             }
         }
-    }
 
+
+    }
 
     @Composable
     fun MainProjectView(onNavigateUp:()->Unit){
-        var newProject= Project()
-        MainProjectView(project = newProject,onNavigateUp=onNavigateUp)
+        var newProject= Project(context= context, projectName = "asd", fileName = "asd")
+        MainProjectView(project = newProject,onNavigateUp=onNavigateUp,{})
     }
 
-
-
-    @Preview
-    @Composable
-    fun PvPreview(){
-        var pd= Project("Example")
-        pd.trackList=mutableListOf<Track>(Track("asd"),Track("asd2"))
-        MainProjectView(pd, onNavigateUp = {})
-    }
 }

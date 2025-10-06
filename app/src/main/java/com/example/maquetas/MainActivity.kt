@@ -1,5 +1,7 @@
 package com.example.maquetas
 
+import android.Manifest
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,6 +32,7 @@ import com.example.maquetas.views.MenuView
 import com.example.maquetas.views.ProjectView
 import kotlinx.serialization.Serializable
 import java.io.File
+import java.security.Permission
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,13 +49,23 @@ class MainActivity : ComponentActivity() {
                             NavHost(navController = navController, startDestination = MainMenu){
 
                                 composable<MainMenu>{
-                            MenuView().MainMenuView(
+                            MenuView(applicationContext).MainMenuView(
                                 onCreateNewProject = {navController.navigate(ProjView)}
                             )
                         }
 
                                 composable<ProjView> {
-                                    ProjectView().MainProjectView(onNavigateUp = { navController.popBackStack() })
+                                    ProjectView(context =applicationContext ).
+                                    MainProjectView(
+                                        onNavigateUp = { navController.popBackStack() },
+                                        requestPermission={permission:String ->
+                                            requestPermissions(arrayOf(permission),1)
+                                        },
+                                        project= Project(context =applicationContext, projectName = "NewProject", fileName = "NewProject")
+
+                                    )
+
+
                                 }
                                 }
                     }

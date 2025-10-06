@@ -9,14 +9,7 @@ class TrackFileManager(track: Track): FileManager() {//esta clase se debe ocupar
     lateinit var trackDir: File //cambiar en el constructor
 
     init{
-
-        if(track.filePath!=null)
-        {
-            trackDir = track.filePath
-        }
-        else{
-
-        }
+        trackDir = track.filePath!!
     }
 
     override fun save(){
@@ -31,6 +24,8 @@ class TrackFileManager(track: Track): FileManager() {//esta clase se debe ocupar
     }
 
     fun getTrackList():MutableList<Take> {
-        TODO("Not yet implemented")
+
+        val temp = emptyList<Take>()
+        return temp.toMutableList()//TODO leer la lista de takes-si no existe retornar la lista vacia
     }
 }

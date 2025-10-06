@@ -5,7 +5,7 @@ import com.example.maquetas.io.TrackFileManager
 import com.example.maquetas.media.Recorder
 import java.io.File
 
-class Track(val fileName:String,val trackName:String="", val filePath: File?=null): ProjectObject(filePath,fileName) {//esta clase NO debe ocuparse de la persistencia de archivos, esto es trabajo del TrackFileManager
+class Track(val fileName:String,val trackName:String="", val filePath: File): ProjectObject(filePath,fileName) {//esta clase NO debe ocuparse de la persistencia de archivos, esto es trabajo del TrackFileManager
     val trackFileMan= TrackFileManager(this)
     var takeList=trackFileMan.getTrackList()
     var recorder= Recorder()

@@ -1,5 +1,6 @@
 package com.example.maquetas.views
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,12 +20,13 @@ import com.example.maquetas.composables.MenuBar
 import com.example.maquetas.composables.MenuItem
 import com.example.maquetas.composables.ProjectCard
 
-class MenuView {
+class MenuView(val context: Context) {
+
 
     @Composable
     fun MainMenuView(onCreateNewProject:()->Unit){
         //Placeholders
-        var pd= Project("Proyecto de ejemplo")
+        var pd= Project(fileName = "asd",projectName = "Proyecto de ejemplo",context=context)
         //--------------
             Surface(color = colorResource(R.color.white)) {
                 Column(modifier = Modifier.fillMaxSize()) {
