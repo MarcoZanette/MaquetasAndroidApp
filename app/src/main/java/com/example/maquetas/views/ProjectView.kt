@@ -92,7 +92,7 @@ class ProjectView (val context:Context){
                     MenuItem { Icon(
                         painter=painterResource(R.drawable.record),
                         contentDescription = stringResource(R.string.record),
-                        tint=MaterialTheme.colorScheme.onSurface,
+                        tint=if(recordingTrack==-1)MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.inverseSurface ,
                         modifier=iconModifier
                             .align(Alignment.Center)
                             .clickable(onClick = {

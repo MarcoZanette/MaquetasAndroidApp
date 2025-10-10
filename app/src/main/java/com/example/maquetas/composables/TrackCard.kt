@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.maquetas.models.Track
+import java.io.File
 
 
 @Composable
@@ -27,7 +28,7 @@ fun TrackCard(track: Track,modifier:Modifier=Modifier,isSelected:Boolean=false){
     var boxModifier=modifier.border(width = 2.dp, shape = RectangleShape, color = MaterialTheme.colorScheme.outline)
 
     if(isSelected){
-        boxModifier=modifier.border(width = 4.dp, shape = RectangleShape, color = MaterialTheme.colorScheme.outlineVariant)
+        boxModifier=modifier.border(width = 2.dp, shape = RectangleShape, color = MaterialTheme.colorScheme.outlineVariant)
 
     }
 
@@ -35,7 +36,7 @@ fun TrackCard(track: Track,modifier:Modifier=Modifier,isSelected:Boolean=false){
         modifier = boxModifier,
     ) {
 
-        Surface (color = MaterialTheme.colorScheme.surface) {
+        Surface (color = MaterialTheme.colorScheme.secondary) {
             Column(modifier=Modifier.padding(2.dp)) {
                 Text(track.fileName)
 
@@ -43,10 +44,10 @@ fun TrackCard(track: Track,modifier:Modifier=Modifier,isSelected:Boolean=false){
                     "Aca van las ondas de sonido flaco",
                     modifier = Modifier.border(
                         width = 1.dp,
-                        shape = RectangleShape,//modificar este borde para que solo este arriba TODO
-                        color = MaterialTheme.colorScheme.primary
+                        shape = RectangleShape,//modificar este borde para que solo este arriba
+                        color = MaterialTheme.colorScheme.onSecondary
                     )
-                )/*TODO*/
+                )
             }
         }
     }
@@ -54,15 +55,16 @@ fun TrackCard(track: Track,modifier:Modifier=Modifier,isSelected:Boolean=false){
 
 }
 
-/*
+
 @Preview
 @Composable
 private fun TCPrev() {
-    val t= Track("Track1")
+    val t= Track("Track1","asd", File(""))
 
     TrackCard(
         track = t,
-        modifier = TODO()
+        modifier = Modifier,
+        isSelected = false
     )
 
-}*/
+}

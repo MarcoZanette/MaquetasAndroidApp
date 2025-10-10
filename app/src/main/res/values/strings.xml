@@ -10,4 +10,6 @@
     <string name="dismissButton">Cancelar</string>
     <string name="createNewTrackTitle">Crear Nueva Pista</string>
     <string name="createNewTrackText">Desea crear una nueva pista?</string>
+    <string name="favorite">Añadir a favoritos</string>
+    <string name="delete">Eliminar</string>
 </resources>
