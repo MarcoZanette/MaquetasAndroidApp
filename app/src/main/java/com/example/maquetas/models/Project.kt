@@ -12,6 +12,8 @@ class Project(val fileName:String="", val filePath: File,val projectName:String=
     var recordReady=true
     var isFav=false
 
+    //TODO dataString:ConfigString()
+
     override var objectName=projectName
 
     constructor(fileName:String,context: Context,projectName:String):this( //constructor para cuando no elijo un path especifico, generalmente si creo un nuevo proyecto sin seleccionar un path
@@ -26,7 +28,8 @@ class Project(val fileName:String="", val filePath: File,val projectName:String=
 
 
     fun addNewTrack(name:String){
-        val track=Track(fileName=name, trackName = name,filePath=filePath)
+        val trackPath= File("$filePath/$name")
+        val track=Track(trackName = name,filePath=trackPath)
         trackList.add(track)
     }
 

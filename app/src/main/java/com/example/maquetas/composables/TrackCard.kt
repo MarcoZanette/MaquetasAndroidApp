@@ -38,7 +38,7 @@ fun TrackCard(track: Track,modifier:Modifier=Modifier,isSelected:Boolean=false){
 
         Surface (color = MaterialTheme.colorScheme.secondary) {
             Column(modifier=Modifier.padding(2.dp)) {
-                Text(track.fileName)
+                Text(track.trackName)
 
                 Text(
                     "Aca van las ondas de sonido flaco",
@@ -59,7 +59,7 @@ fun TrackCard(track: Track,modifier:Modifier=Modifier,isSelected:Boolean=false){
 @Preview
 @Composable
 private fun TCPrev() {
-    val t= Track("Track1","asd", File(""))
+    val t= Track("Track1", File(""))
 
     TrackCard(
         track = t,

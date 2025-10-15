@@ -10,10 +10,12 @@ import java.io.FileOutputStream
 
 class Recorder(): MediaRecorder()
 {
+
     fun start(outputFile: File){
 
         try
         {
+
             this.setAudioSource(MediaRecorder.AudioSource.MIC)
             this.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             this.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)

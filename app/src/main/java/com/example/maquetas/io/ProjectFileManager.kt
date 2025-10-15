@@ -53,7 +53,7 @@ class ProjectFileManager(private val project: Project): FileManager() {
         val configString=ConfigString()
         configString.addKey(key="name",value=project.projectName)
         for(i in project.trackList.indices){
-            configString.addKey(key=i.toString(),project.trackList[i].fileName)
+            configString.addKey(key= "track$i",project.trackList[i].trackName)
         }
         configString.addKey("fav",project.isFav.toString())
 

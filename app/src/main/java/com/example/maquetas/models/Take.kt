@@ -5,8 +5,8 @@ import com.example.maquetas.io.TakeFileManager
 import com.example.maquetas.io.TrackFileManager
 import java.io.File
 
-class Take(val fileName:String, val parentPath: File): ProjectObject(parentPath,fileName) {
+class Take(val takeName:String, val parentPath: File): ProjectObject(parentPath,takeName) {
     override val fileMan: TakeFileManager = TakeFileManager(this)
-    val filePath=File(parentPath.toString()+fileName)
-    override var objectName: String=fileName
+    val filePath=File("$parentPath/$takeName")
+    override var objectName: String=takeName
 }
