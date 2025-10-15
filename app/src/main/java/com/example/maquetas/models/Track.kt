@@ -10,6 +10,8 @@ class Track(val fileName:String,val trackName:String="", val filePath: File): Pr
     var takeList=trackFileMan.getTrackList()
     var recorder= Recorder()
 
+    override var objectName=trackName //TODO crear el directorio y toda la estructura del mismo guiandose por el FakeProject (Carpeta descargas)
+
     fun recordNewTake() {
 
         val takeName="take "+(takeList.size+1)
@@ -23,6 +25,10 @@ class Track(val fileName:String,val trackName:String="", val filePath: File): Pr
 
     fun stopRecording(){
         recorder.stop()
+    }
+
+    fun save() {
+        trackFileMan.save()
     }
 
     override val fileMan: TrackFileManager= TrackFileManager(this)

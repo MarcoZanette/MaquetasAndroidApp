@@ -10,5 +10,4 @@ abstract class FileManager {
 
     abstract fun save()
     abstract fun load(): ProjectObject
-    abstract fun format()
 }

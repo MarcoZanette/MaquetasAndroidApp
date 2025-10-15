@@ -14,7 +14,7 @@ class TakeFileManager(take: Take): FileManager() {
         return temp
     }
 
-    override fun format(){
-
+    private fun format(): String {
+return ""
     }
 }

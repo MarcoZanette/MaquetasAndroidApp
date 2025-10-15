@@ -5,17 +5,24 @@ import com.example.maquetas.io.ProjectFileManager
 import com.example.maquetas.models.ProjectObject
 import java.io.File
 
+//FILE PATH DEBE REFERENCIAR UN DIRECTORIO, NO UN ARCHIVO
 class Project(val fileName:String="", val filePath: File,val projectName:String="New Project"): ProjectObject(filePath,fileName) {
     override val fileMan= ProjectFileManager(this)
     var trackList=mutableListOf<Track>()
     var recordReady=true
     var isFav=false
 
+    override var objectName=projectName
+
     constructor(fileName:String,context: Context,projectName:String):this( //constructor para cuando no elijo un path especifico, generalmente si creo un nuevo proyecto sin seleccionar un path
         fileName = fileName,
-        filePath = File("${context.cacheDir}$projectName"),
+        filePath = File("${context.cacheDir}/$projectName"),
         projectName = projectName
-    )
+    ){
+        objectName=projectName
+
+
+    }
 
 
     fun addNewTrack(name:String){
@@ -39,6 +46,9 @@ class Project(val fileName:String="", val filePath: File,val projectName:String=
         recordReady=true
     }
 
+    fun save(){//TODO Retornar si se guardo con exito, mostrar un cartel en la vista en tal caso
+        fileMan.save()
+    }
 
 }
 

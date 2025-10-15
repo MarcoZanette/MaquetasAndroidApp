@@ -40,11 +40,10 @@ class Config(context: Context) {
     private fun createConfigFile(configFile: File) {
         val writer=configFile.writer()
 
-
         val configString= "@projectsDir='$projectsDir'"
 
         writer.write(configString)
-
+        writer.close()
     }
 
     fun saveConfig(){

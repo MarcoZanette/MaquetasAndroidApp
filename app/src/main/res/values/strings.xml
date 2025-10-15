@@ -12,4 +12,5 @@
     <string name="createNewTrackText">Desea crear una nueva pista?</string>
     <string name="favorite">Añadir a favoritos</string>
     <string name="delete">Eliminar</string>
+    <string name="save">Guardar</string>
 </resources>

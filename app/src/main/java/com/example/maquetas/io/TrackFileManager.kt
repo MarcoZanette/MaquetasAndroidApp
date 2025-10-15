@@ -6,7 +6,7 @@ import java.io.File
 
 class TrackFileManager(track: Track): FileManager() {//esta clase se debe ocupar UNICAMENTE de la interaccion entre la clase Track y el sistema de archivos de android
     var temp=track//TODO borrar, solo sirgve para el return de la funcion load()
-    var trackDir: File = track.filePath //cambiar en el constructor
+    var trackDir: File = track.filePath
 
     override fun save(){
 
@@ -15,8 +15,8 @@ class TrackFileManager(track: Track): FileManager() {//esta clase se debe ocupar
         return temp
     }
 
-    override fun format(){
-
+    private fun format(): String {
+        return ""
     }
 
     fun getTrackList():MutableList<Take> {

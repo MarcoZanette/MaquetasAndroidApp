@@ -160,6 +160,16 @@ class ProjectView (val context:Context){
 
                             })
                     )}
+                    MenuItem{Icon(
+                        painter=painterResource(R.drawable.ic_launcher_foreground),//TODO imagen de guardado
+                        contentDescription = stringResource(R.string.save),
+                        tint=MaterialTheme.colorScheme.onSurface,
+                        modifier= iconModifier
+                            .align(Alignment.Center)
+                            .clickable(onClick = {
+                                project.save()
+                            })
+                    )}
 
 
                 }

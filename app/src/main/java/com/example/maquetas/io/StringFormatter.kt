@@ -1,6 +1,8 @@
 package com.example.maquetas.io
 
 import com.example.maquetas.exceptions.WrongFormatException
+import com.example.maquetas.models.Project
+import com.example.maquetas.models.ProjectObject
 
 class ConfigString() {
 
@@ -9,16 +11,25 @@ class ConfigString() {
             throw WrongFormatException()
         }else
         {
-            str = string
+            value = string
         }
     }
 
-    var str:String="@"
+    var value:String="@"
         private set
 
     fun addKey(key:String,value: String){
-        str="$str$key:$value@"
+        val v=this.value
+        this.value="$v$key:$value@"
     }
+
+    fun addKey(key:String,obj: ProjectObject){
+        val v=this.value
+        val o=obj.objectName
+        this.value="$v$key:$o@"
+
+    }
+
 
     fun search(key:String):String?{//retorna null si no encuentra la key
 
@@ -34,8 +45,8 @@ class ConfigString() {
 
 
         if(regex.matches(k)) {
-            val result = regex.find(str)!!
-            val substring=str.substring(result.range.last)
+            val result = regex.find(this.value)!!
+            val substring=this.value.substring(result.range.last)
             val subRegex=Regex("@")
             val subResult=subRegex.find(substring)!!
 

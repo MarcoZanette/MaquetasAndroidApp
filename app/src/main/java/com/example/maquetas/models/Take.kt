@@ -8,4 +8,5 @@ import java.io.File
 class Take(val fileName:String, val parentPath: File): ProjectObject(parentPath,fileName) {
     override val fileMan: TakeFileManager = TakeFileManager(this)
     val filePath=File(parentPath.toString()+fileName)
+    override var objectName: String=fileName
 }
