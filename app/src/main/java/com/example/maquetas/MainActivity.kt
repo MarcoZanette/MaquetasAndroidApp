@@ -25,7 +25,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.maquetas.composables.Menu
+import com.example.maquetas.io.ProjectFileManager
 import com.example.maquetas.models.Project
 import com.example.maquetas.ui.theme.MaquetasTheme
 import com.example.maquetas.views.MenuView
@@ -49,8 +51,15 @@ class MainActivity : ComponentActivity() {
                             NavHost(navController = navController, startDestination = MainMenu){
 
                                 composable<MainMenu>{
+                                    val projectList=getCacheList()
                             MenuView(applicationContext).MainMenuView(
-                                onCreateNewProject = {navController.navigate(ProjView)}
+                                onCreateNewProject = {navController.navigate(ProjView)},
+                                projectList = projectList,
+                                onProjectLoad = {
+                                    p->navController.navigate(
+                                        PView(p.filePath.toString(),p.projectName)
+                                    )
+                                }
                             )
                         }
 
@@ -64,14 +73,47 @@ class MainActivity : ComponentActivity() {
                                         project= Project(context =applicationContext, projectName = "NewProject", fileName = "NewProject")
 
                                     )
+                                }
 
+                                composable <PView>{
+                                    val args=it.toRoute<PView>()
+
+                                    ProjectView(context=applicationContext).
+                                    MainProjectView(
+                                        onNavigateUp = { navController.popBackStack() },
+                                        requestPermission={permission:String ->
+                                            requestPermissions(arrayOf(permission),1)
+                                        },
+                                        project= Project(context =applicationContext, projectName = args.projectName, fileName = args.projectDir)
+
+                                    )
 
                                 }
+
+
+
+
                                 }
                     }
                 }
                 }
             }
+    fun getCacheList():List<Project>{
+
+        val dirList=cacheDir.list()
+        val projectList=mutableListOf<Project>()
+
+        if(dirList.size!=0){
+            for(dir in dirList){
+                var p=Project()
+                val fm= ProjectFileManager(p)
+                val currentDir=File("$cacheDir/$dir")
+                p=fm.load(currentDir)
+                projectList.add(p)
+            }
+        }
+        return projectList
+    }
         }
 
 @Serializable
@@ -79,3 +121,6 @@ object MainMenu
 
 @Serializable
 object ProjView
+
+@Serializable
+data class PView(val projectDir:String,val projectName:String)

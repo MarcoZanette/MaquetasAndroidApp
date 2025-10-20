@@ -5,9 +5,8 @@ import java.io.File
 
 abstract class FileManager {
     val file: File?=null
-    val rawData:String=""
 
 
     abstract fun save()
-    abstract fun load(): ProjectObject
+    abstract fun load(dir:File): ProjectObject
 }

@@ -6,6 +6,7 @@ import kotlinx.serialization.StringFormat
 import java.io.File
 import java.io.FileWriter
 import java.io.OutputStreamWriter
+import java.net.ProtocolException
 
 class ProjectFileManager(private val project: Project): FileManager() {
 
@@ -15,7 +16,7 @@ class ProjectFileManager(private val project: Project): FileManager() {
             project.filePath.mkdir()
         }
 
-        val configString=format()
+        val dataString=project.getDataString()
         val path=project.filePath
         val child="${project.objectName}.data"
         val configFile= File(path,child)
@@ -24,16 +25,16 @@ class ProjectFileManager(private val project: Project): FileManager() {
         try
         {
             val fileWriter = configFile.writer()
-            fileWriter.write(configString)
+            fileWriter.write(dataString.value)
             fileWriter.close()
-            Log.println(Log.DEBUG,"Config String",configString)
+            Log.println(Log.DEBUG,"Config String",dataString.value)
 
 
         }catch (e:Exception){
             e.printStackTrace()
         }
 
-        //save tracks
+        //save tracks TODO borrar tracks que fueron eliminadas por el usuario, comparando los dataStrings
         try{
 
             for(track in project.trackList){
@@ -45,8 +46,27 @@ class ProjectFileManager(private val project: Project): FileManager() {
         }
 
     }
-    override fun load(): Project{
+    override fun load(dir:File): Project{
         return project
+    }
+
+    fun basicLoad(dir:File): Project?{
+
+        val dataFile=File("$dir/${dir.name}.data")
+
+        if(dataFile.exists()){
+            val reader=dataFile.reader()
+            val dataString=ConfigString(reader.readText())
+
+            val name=dataString.search("project")!!
+            val p= Project(name,dir,name)
+
+            return p
+        }
+        else
+        {
+            return null
+        }
     }
 
     private fun format(): String{

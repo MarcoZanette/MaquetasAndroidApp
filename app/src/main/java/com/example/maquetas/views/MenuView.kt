@@ -24,7 +24,7 @@ class MenuView(val context: Context) {
 
 
     @Composable
-    fun MainMenuView(onCreateNewProject:()->Unit){
+    fun MainMenuView(onProjectLoad:(project:Project)->Unit,onCreateNewProject:()->Unit,projectList:List<Project>){
         //Placeholders
         var pd= Project(fileName = "asd",projectName = "Proyecto de ejemplo",context=context)
         //--------------
@@ -36,18 +36,16 @@ class MenuView(val context: Context) {
                             Text(text="New",modifier=Modifier.clickable(onClick = onCreateNewProject))
                         }
                     }
-                    ProjectCard(pd) { projectData ->
-                        //navegar enviando la projectData como parametro
+
+                    for(i in projectList.indices){
+                        ProjectCard(projectList[i]) { p ->
+                            onProjectLoad(p)//TODO mostrar popup de confirmacion
+                        }
                     }
                 }
             }
         }
 
-    @Preview
-    @Composable
-    fun PvPreview(){
-        MainMenuView(onCreateNewProject = {})
-    }
 
 
 

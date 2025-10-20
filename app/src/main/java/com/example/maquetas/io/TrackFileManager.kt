@@ -8,8 +8,6 @@ import java.io.File
 class TrackFileManager(val track: Track): FileManager() {//esta clase se debe ocupar UNICAMENTE de la interaccion entre la clase Track y el sistema de archivos de android
 
     var trackDir: File = track.filePath
-    var dataString= ConfigString()
-
 
     override fun save() {
         saveConfig()
@@ -21,7 +19,8 @@ class TrackFileManager(val track: Track): FileManager() {//esta clase se debe oc
             track.filePath.mkdir()
         }
 
-        dataString.addKey(key="trackName", value = track.trackName)//TODO ocasiona problemas al llamarse repetidas veces
+
+        val dataString=track.getDataString()
         val path=track.filePath
         val child="${track.trackName}.data"
         val configFile=File(path,child)
@@ -38,10 +37,12 @@ class TrackFileManager(val track: Track): FileManager() {//esta clase se debe oc
             e.printStackTrace()
         }
 
+
+
     }
 
 
-    override fun load(): Track{
+    override fun load(dir:File): Track{
         return track//TODO
     }
 
@@ -52,7 +53,4 @@ class TrackFileManager(val track: Track): FileManager() {//esta clase se debe oc
         return temp.toMutableList()//TODO leer la lista de takes-si no existe retornar la lista vacia
     }
 
-    fun addTake(newTake: Take) {
-        dataString.addKey("@take",newTake.objectName)
-    }
 }
