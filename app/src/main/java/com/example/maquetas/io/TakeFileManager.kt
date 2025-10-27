@@ -10,7 +10,7 @@ class TakeFileManager(take: Take): FileManager() {
     override fun save(){
 
     }
-    override fun load(): Take{
+    override fun load(dir:File): Take{
         return temp
     }
 

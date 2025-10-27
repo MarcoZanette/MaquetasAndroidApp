@@ -5,9 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -18,22 +20,37 @@ import com.example.maquetas.models.Project
 import com.example.maquetas.R
 import com.example.maquetas.composables.MenuBar
 import com.example.maquetas.composables.MenuItem
+import com.example.maquetas.composables.NewItemPopup
 import com.example.maquetas.composables.ProjectCard
 
 class MenuView(val context: Context) {
 
 
     @Composable
-    fun MainMenuView(onProjectLoad:(project:Project)->Unit,onCreateNewProject:()->Unit,projectList:List<Project>){
+    fun MainMenuView(onProjectLoad:(project:Project)->Unit,onCreateNewProject:(name:String)->Unit,projectList:List<Project>){
         //Placeholders
         var pd= Project(fileName = "asd",projectName = "Proyecto de ejemplo",context=context)
         //--------------
-            Surface(color = colorResource(R.color.white)) {
+        var showNewProjectPopUp=false
+        var showLoadProjectPopUp=false
+
+        Surface(color = colorResource(R.color.white)) {
+                var newItemState= remember{ TextFieldState() }
+                NewItemPopup(
+                    showDialog=showNewProjectPopUp,
+                    title="Crear Nuevo Proyecto?",
+                    text="Desea crear un nuevo proyecto?",
+                    onDismiss ={},
+                    onConfirm = {onCreateNewProject(newItemState.text.toString())},
+                    state = newItemState
+                )
                 Column(modifier = Modifier.fillMaxSize()) {
                     MenuBar {
                         MenuItem(painter = painterResource(R.drawable.ic_launcher_foreground), onClick = {})
                         MenuItem{
-                            Text(text="New",modifier=Modifier.clickable(onClick = onCreateNewProject))
+                            Text(text="New",modifier=Modifier.clickable(onClick= {
+                                showNewProjectPopUp = true
+                            })) //(onClick = onCreateNewProject))
                         }
                     }
 

@@ -8,7 +8,7 @@ import java.io.FileWriter
 import java.io.OutputStreamWriter
 import java.net.ProtocolException
 
-class ProjectFileManager(private val project: Project): FileManager() {
+class ProjectFileManager(private val project: Project=Project()): FileManager() {
 
     override fun save(){
 
@@ -46,7 +46,7 @@ class ProjectFileManager(private val project: Project): FileManager() {
         }
 
     }
-    override fun load(dir:File): Project{
+    override fun load(dir:File): Project{//TODO Cargar proyecto
         return project
     }
 

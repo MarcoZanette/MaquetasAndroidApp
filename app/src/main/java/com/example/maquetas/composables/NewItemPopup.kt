@@ -28,7 +28,7 @@ import com.example.maquetas.R
 
 
 @Composable
-fun NewItemPopup(showDialog:Boolean=false,title:String,text:String,onDismiss:()->Unit,onConfirm:()->Unit,state: TextFieldState){
+fun NewItemPopup(showDialog:Boolean=false,title:String,text:String,onDismiss:()->Unit,onConfirm:()->Unit,state: TextFieldState= TextFieldState()){
 
     if(showDialog) {
         AlertDialog(

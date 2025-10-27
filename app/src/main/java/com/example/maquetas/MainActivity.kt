@@ -53,7 +53,8 @@ class MainActivity : ComponentActivity() {
                                 composable<MainMenu>{
                                     val projectList=getCacheList()
                             MenuView(applicationContext).MainMenuView(
-                                onCreateNewProject = {navController.navigate(ProjView)},
+                                onCreateNewProject = {p ->
+                                    navController.navigate(NewProjView(p))},
                                 projectList = projectList,
                                 onProjectLoad = {
                                     p->navController.navigate(
@@ -63,20 +64,24 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                                composable<ProjView> {
+                                composable<NewProjView> {
+                                    val args=it.toRoute<NewProjView>()
                                     ProjectView(context =applicationContext ).
                                     MainProjectView(
                                         onNavigateUp = { navController.popBackStack() },
                                         requestPermission={permission:String ->
                                             requestPermissions(arrayOf(permission),1)
                                         },
-                                        project= Project(context =applicationContext, projectName = "NewProject", fileName = "NewProject")
+                                        project= Project(context =applicationContext, projectName = args.projectName, fileName =args.projectName)
 
                                     )
                                 }
 
                                 composable <PView>{
                                     val args=it.toRoute<PView>()
+                                    //cargar el proyecto
+                                    var fileMan= ProjectFileManager()//TODO en la clase ProjectFileMan
+                                    var project= fileMan.load(File(args.projectDir))
 
                                     ProjectView(context=applicationContext).
                                     MainProjectView(
@@ -84,7 +89,7 @@ class MainActivity : ComponentActivity() {
                                         requestPermission={permission:String ->
                                             requestPermissions(arrayOf(permission),1)
                                         },
-                                        project= Project(context =applicationContext, projectName = args.projectName, fileName = args.projectDir)
+                                        project=project
 
                                     )
 
@@ -120,7 +125,7 @@ class MainActivity : ComponentActivity() {
 object MainMenu
 
 @Serializable
-object ProjView
+data class NewProjView(val projectName:String)
 
 @Serializable
 data class PView(val projectDir:String,val projectName:String)
