@@ -66,7 +66,7 @@ class Project(val fileName:String="", val filePath: File,val projectName:String=
         val dataString=ConfigString()
 
 
-        dataString.addKey("project",this)
+        dataString.addKey("name",this)
 
         for(i in trackList.indices){
             dataString.addKey("track$i",trackList[i])

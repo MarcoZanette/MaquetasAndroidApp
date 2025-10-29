@@ -55,10 +55,20 @@ class ProjectFileManager(private val project: Project=Project()): FileManager() 
         val dataFile=File("$dir/${dir.name}.data")
 
         if(dataFile.exists()){
+
             val reader=dataFile.reader()
             val dataString=ConfigString(reader.readText())
 
-            val name=dataString.search("project")!!
+            var name:String=""
+
+            try
+            {
+                name = dataString.search("name")!!
+            }catch (e:Exception){
+                e.printStackTrace()
+                Log.println(Log.DEBUG,"DataString",dataString.value)
+            }
+
             val p= Project(name,dir,name)
 
             return p
@@ -67,6 +77,10 @@ class ProjectFileManager(private val project: Project=Project()): FileManager() 
         {
             return null
         }
+    }
+
+    fun loadInDir(dir:File){
+
     }
 
     private fun format(): String{

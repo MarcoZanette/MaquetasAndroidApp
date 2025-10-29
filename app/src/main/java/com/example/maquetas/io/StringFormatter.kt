@@ -34,17 +34,16 @@ class ConfigString() {
     fun search(key:String):String?{//retorna null si no encuentra la key
 
         var k=key
-        val regex=Regex(k)
         var value:String?
-
 
         if(k[0]!=('@'))
         {
-            k="@"+k
+            k= "@$k"
         }
 
+        val regex=Regex(k)
 
-        if(regex.matches(k)) {
+        if(regex.containsMatchIn(this.value)) {
             val result = regex.find(this.value)!!
             val substring=this.value.substring(result.range.last)
             val subRegex=Regex("@")

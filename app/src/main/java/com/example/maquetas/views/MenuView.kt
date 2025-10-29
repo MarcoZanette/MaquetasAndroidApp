@@ -9,6 +9,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -31,13 +32,13 @@ class MenuView(val context: Context) {
         //Placeholders
         var pd= Project(fileName = "asd",projectName = "Proyecto de ejemplo",context=context)
         //--------------
-        var showNewProjectPopUp=false
+        var showNewProjectPopUp= remember{mutableStateOf(false)}
         var showLoadProjectPopUp=false
 
         Surface(color = colorResource(R.color.white)) {
                 var newItemState= remember{ TextFieldState() }
                 NewItemPopup(
-                    showDialog=showNewProjectPopUp,
+                    showDialog=showNewProjectPopUp.value,
                     title="Crear Nuevo Proyecto?",
                     text="Desea crear un nuevo proyecto?",
                     onDismiss ={},
@@ -49,7 +50,7 @@ class MenuView(val context: Context) {
                         MenuItem(painter = painterResource(R.drawable.ic_launcher_foreground), onClick = {})
                         MenuItem{
                             Text(text="New",modifier=Modifier.clickable(onClick= {
-                                showNewProjectPopUp = true
+                                showNewProjectPopUp.value = true
                             })) //(onClick = onCreateNewProject))
                         }
                     }

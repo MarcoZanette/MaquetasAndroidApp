@@ -3,6 +3,7 @@ package com.example.maquetas
 import android.Manifest
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -108,13 +109,21 @@ class MainActivity : ComponentActivity() {
         val dirList=cacheDir.list()
         val projectList=mutableListOf<Project>()
 
-        if(dirList.size!=0){
+        if(dirList!!.size!=0){
             for(dir in dirList){
-                var p=Project()
-                val fm= ProjectFileManager(p)
+
+                val fm= ProjectFileManager()
                 val currentDir=File("$cacheDir/$dir")
-                p=fm.load(currentDir)
-                projectList.add(p)
+
+                val p:Project?=fm.basicLoad(currentDir)
+
+                if(p!=null) {
+                    projectList.add(p)
+                }
+                else{
+                    Log.println(Log.DEBUG,"Project load info","$dir, $currentDir")
+
+                }
             }
         }
         return projectList
