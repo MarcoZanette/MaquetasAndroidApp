@@ -1,6 +1,7 @@
 package com.example.maquetas.io
 
 import android.util.Log
+import com.example.maquetas.models.ProjectObject
 import com.example.maquetas.models.Take
 import com.example.maquetas.models.Track
 import java.io.File
@@ -11,6 +12,10 @@ class TrackFileManager(val track: Track): FileManager() {//esta clase se debe oc
 
     override fun save() {
         saveConfig()
+    }
+
+    override fun readDataFile(dir: File): Take? {
+        TODO("Not yet implemented")
     }
 
     fun saveConfig(){

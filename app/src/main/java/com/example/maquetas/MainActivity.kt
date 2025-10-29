@@ -59,7 +59,7 @@ class MainActivity : ComponentActivity() {
                                 projectList = projectList,
                                 onProjectLoad = {
                                     p->navController.navigate(
-                                        PView(p.filePath.toString(),p.projectName)
+                                        ProjView(p.filePath.toString(),p.projectName)
                                     )
                                 }
                             )
@@ -78,8 +78,8 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
 
-                                composable <PView>{
-                                    val args=it.toRoute<PView>()
+                                composable <ProjView>{
+                                    val args=it.toRoute<ProjView>()
                                     //cargar el proyecto
                                     var fileMan= ProjectFileManager()//TODO en la clase ProjectFileMan
                                     var project= fileMan.load(File(args.projectDir))
@@ -115,7 +115,7 @@ class MainActivity : ComponentActivity() {
                 val fm= ProjectFileManager()
                 val currentDir=File("$cacheDir/$dir")
 
-                val p:Project?=fm.basicLoad(currentDir)
+                val p:Project?=fm.readDataFile(currentDir)
 
                 if(p!=null) {
                     projectList.add(p)
@@ -137,4 +137,4 @@ object MainMenu
 data class NewProjView(val projectName:String)
 
 @Serializable
-data class PView(val projectDir:String,val projectName:String)
+data class ProjView(val projectDir:String,val projectName:String)

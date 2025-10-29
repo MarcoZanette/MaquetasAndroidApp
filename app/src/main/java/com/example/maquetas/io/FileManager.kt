@@ -9,4 +9,5 @@ abstract class FileManager {
 
     abstract fun save()
     abstract fun load(dir:File): ProjectObject
+    abstract fun readDataFile(dir:File): ProjectObject?
 }

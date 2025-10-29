@@ -49,7 +49,7 @@ class ConfigString() {
             val subRegex=Regex("@")
             val subResult=subRegex.find(substring)!!
 
-            value=substring.substring(0,subResult.range.last)
+            value=substring.substring(2,subResult.range.last)
 
 
         }
