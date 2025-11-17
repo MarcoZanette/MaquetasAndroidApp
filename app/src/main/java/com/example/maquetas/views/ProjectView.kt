@@ -144,7 +144,9 @@ class ProjectView (val context:Context){
                         tint= MaterialTheme.colorScheme.onSurface,
                         modifier=iconModifier
                             .align(Alignment.Center)
-                            .clickable(onClick = {})
+                            .clickable(onClick = {
+                                project.play()
+                            })
                     )}
                     MenuItem{Icon(
                         painter=painterResource(R.drawable.add),

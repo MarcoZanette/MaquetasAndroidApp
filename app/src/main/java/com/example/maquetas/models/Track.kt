@@ -3,6 +3,7 @@ package com.example.maquetas.models
 import com.example.maquetas.io.ConfigString
 import com.example.maquetas.io.FileManager
 import com.example.maquetas.io.TrackFileManager
+import com.example.maquetas.media.Player
 import com.example.maquetas.media.Recorder
 import java.io.File
 
@@ -12,7 +13,7 @@ class Track(val trackName:String="", val filePath: File): ProjectObject(filePath
 
     //esta clase NO debe ocuparse de la persistencia de archivos, esto es trabajo del TrackFileManager
     var trackFileMan= TrackFileManager(this)
-    var takeList=trackFileMan.getTrackList()
+    var takeList=trackFileMan.getTakeList()
     var recorder= Recorder()
 
     override var objectName=trackName
@@ -33,7 +34,7 @@ class Track(val trackName:String="", val filePath: File): ProjectObject(filePath
 
     fun recordNewTake() {
 
-        val takeName="take "+(takeList.size+1)
+        val takeName="take"+(takeList.size+1)
 
         val parentFile=trackFileMan.trackDir
         val newTake=Take(takeName,parentFile)
@@ -71,6 +72,13 @@ class Track(val trackName:String="", val filePath: File): ProjectObject(filePath
 
 
         return configString
+
+    }
+
+    fun play() {
+        val player: Player=Player()
+
+        player.play(takeList[activeTake].filePath)//TODO verificar funcionamiento de la lista de takes
 
     }
 

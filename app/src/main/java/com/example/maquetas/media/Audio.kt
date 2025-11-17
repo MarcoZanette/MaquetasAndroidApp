@@ -42,6 +42,10 @@ class Recorder(): MediaRecorder()
 
 class Player():MediaPlayer(){
 
+    init {
+        setOnCompletionListener { this.release() }
+    }
+
     fun play(file:File){
         //create(context,file.toUri())
         try

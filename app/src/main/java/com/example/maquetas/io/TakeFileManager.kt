@@ -1,5 +1,6 @@
 package com.example.maquetas.io
 
+import android.content.Context
 import com.example.maquetas.models.ProjectObject
 import com.example.maquetas.models.Take
 import com.example.maquetas.models.Track
@@ -15,7 +16,14 @@ class TakeFileManager(take: Take): FileManager() {
         return temp
     }
 
-    override fun readDataFile(dir: File): Take? {
+    override fun readDataFile(
+        dir: File,
+        context: Context
+    ): ProjectObject? {
+        TODO("Not yet implemented")
+    }
+
+     fun readDataFile(dir: File): Take? {
         TODO("Not yet implemented")
     }
     private fun format(): String {

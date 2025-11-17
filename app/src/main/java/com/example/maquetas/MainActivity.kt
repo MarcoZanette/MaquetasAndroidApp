@@ -81,8 +81,8 @@ class MainActivity : ComponentActivity() {
                                 composable <ProjView>{
                                     val args=it.toRoute<ProjView>()
                                     //cargar el proyecto
-                                    var fileMan= ProjectFileManager()//TODO en la clase ProjectFileMan
-                                    var project= fileMan.load(File(args.projectDir))
+                                    var fileMan= ProjectFileManager(applicationContext)//TODO en la clase ProjectFileMan
+                                    var project= fileMan.load(File(args.projectDir),applicationContext)
 
                                     ProjectView(context=applicationContext).
                                     MainProjectView(
@@ -106,26 +106,30 @@ class MainActivity : ComponentActivity() {
             }
     fun getCacheList():List<Project>{
 
-        val dirList=cacheDir.list()
+        val projectsDir=File("$cacheDir/projects")
+
+        val dirList=projectsDir.list()
         val projectList=mutableListOf<Project>()
 
-        if(dirList!!.size!=0){
-            for(dir in dirList){
 
-                val fm= ProjectFileManager()
-                val currentDir=File("$cacheDir/$dir")
 
-                val p:Project?=fm.readDataFile(currentDir)
+        if (!dirList.isNullOrEmpty()) {
+            for (dir in dirList) {
 
-                if(p!=null) {
+                val fm = ProjectFileManager(applicationContext)
+                val currentDir = File("$projectsDir/$dir")
+
+                val p: Project? = fm.readDataFile(currentDir,applicationContext)
+
+                if (p != null) {
                     projectList.add(p)
-                }
-                else{
-                    Log.println(Log.DEBUG,"Project load info","$dir, $currentDir")
+                } else {
+                    Log.println(Log.DEBUG, "Project load info", "$dir, $currentDir")
 
                 }
             }
         }
+
         return projectList
     }
         }

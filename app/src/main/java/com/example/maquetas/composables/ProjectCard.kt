@@ -100,11 +100,3 @@ fun ProjectCard(project: Project, cardOnclick:(project: Project)->Unit){ //al ha
     }
 
 }
-
-
-@Preview
-@Composable
-private fun pcPrev() {
-    var pd=Project(fileName = "", filePath = File(""))
-    ProjectCard(pd) { }
-}

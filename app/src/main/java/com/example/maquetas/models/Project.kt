@@ -7,38 +7,45 @@ import com.example.maquetas.models.ProjectObject
 import java.io.File
 
 //FILE PATH DEBE REFERENCIAR UN DIRECTORIO, NO UN ARCHIVO
-class Project(val fileName:String="", val filePath: File,val projectName:String="New Project"): ProjectObject(filePath,fileName) {
-    override var fileMan= ProjectFileManager(this)
+class Project(val fileName:String="",val context:Context, val filePath: File=File(""),val projectName:String="New Project"): ProjectObject(filePath,fileName) {
+
+
+    override lateinit var fileMan: ProjectFileManager
     var trackList=mutableListOf<Track>()
     var recordReady=true
     var isFav=false
-
+    var projectCache:File?=null
     override var objectName=projectName
 
-    constructor(fileName:String,context: Context,projectName:String):this( //constructor para cuando no elijo un path especifico, generalmente si creo un nuevo proyecto sin seleccionar un path
-        fileName = fileName,
-        filePath = File("${context.cacheDir}/$projectName"),
-        projectName = projectName
-    ){
-        objectName=projectName
-    }
+    constructor(context:Context):this(fileName = "", filePath = File(""),context=context, projectName = ""){
+        /*
+        if(context!=null)
+        { projectCache = File("${context.cacheDir.toString()}/projects/$fileName") }
 
-    constructor(p: Project):this(fileName = p.fileName, filePath = p.filePath, projectName = p.projectName){
-        objectName=projectName
-        trackList=p.trackList
-        isFav=p.isFav
-        fileMan=p.fileMan
-    }
+        fileMan= ProjectFileManager(this)
+*/ }
 
-    constructor():this("",File(""),"")//Constructor vacio
+
+    init{
+        if(context!=null){
+            projectCache=File("${context.cacheDir.toString()}/projects/$fileName")
+            fileMan= ProjectFileManager(this)
+        }
+        else
+        {
+            val e=Exception()//TODO excepcion--context null, no pudo inicializarse la propiedad fileMan
+            throw e
+        }
+    }
 
 
 
 
     fun addNewTrack(name:String){
-        val trackPath= File("$filePath/$name")
+        val trackPath= File("$projectCache/$name")
         val track=Track(trackName = name,filePath=trackPath)
         trackList.add(track)
+        save()
     }
 
     fun record(selectedTrack:Int) {
@@ -55,12 +62,18 @@ class Project(val fileName:String="", val filePath: File,val projectName:String=
     fun stopRecording(selectedTrack: Int){
         trackList[selectedTrack].stopRecording()
         recordReady=true
+        save()
     }
 
-    fun save(){//TODO Retornar si se guardo con exito, mostrar un cartel en la vista en tal caso
+    fun save(){
         fileMan.save()
     }
 
+
+    fun saveToExternal(dir:File):Boolean{
+        //TODO Retornar si se guardo con exito, mostrar un cartel en la vista en tal caso
+        return false
+    }
 
     fun getDataString(): ConfigString{
         val dataString=ConfigString()
@@ -74,6 +87,13 @@ class Project(val fileName:String="", val filePath: File,val projectName:String=
         dataString.addKey("fav",isFav.toString())
 
         return dataString
+    }
+
+    fun play() {
+
+        for(t in trackList){
+            t.play()
+        }
     }
 
 }

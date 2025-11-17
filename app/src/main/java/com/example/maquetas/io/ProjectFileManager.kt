@@ -1,5 +1,6 @@
 package com.example.maquetas.io
 
+import android.content.Context
 import android.util.Log
 import com.example.maquetas.models.Project
 import com.example.maquetas.models.ProjectObject
@@ -10,16 +11,58 @@ import java.io.FileWriter
 import java.io.OutputStreamWriter
 import java.net.ProtocolException
 
-class ProjectFileManager(private val project: Project=Project()): FileManager() {
+class ProjectFileManager(private val project: Project): FileManager() {
 
-    override fun save(){
+    constructor(context: Context):this(project = Project("",context))
 
-        if(!project.filePath.exists()){
-            project.filePath.mkdir()
+
+    init{
+        if(project.context!=null){
+            save()
+        }
+    }
+
+    fun saveToExternal(dir:File){
+        //TODO -- Agregar parametros a save y usarla para esta misma funcion?
+    }
+
+
+    override fun save() {
+
+        if(project.projectCache!=null) {
+            this.save(dir = project.projectCache!!)
+
+            Log.println(Log.DEBUG,"ProjectCacheInfo","ProjectCache: ${project.projectCache}")
+
+        }else
+        {
+            Log.println(Log.DEBUG,"NullProjectCache","ProjectCache${project.projectCache}")
+            val e=Exception()//TODO Crear esta exception - project Cache is null
+            throw e
+        }
+    }
+
+    override fun load(dir: File): Project {
+        TODO("Not yet implemented")
+    }
+
+    fun save(dir:File){
+
+
+        if(!dir.exists()){
+
+
+            val a=dir.mkdirs()
+
+
+            if (!a){
+                throw Exception() //TODO crear excepcion para cuando no se puede crear el cache de directorios/cache de este proyecto particular
+            }
         }
 
+
         val dataString=project.getDataString()
-        val path=project.filePath
+        val path=dir
         val child="${project.objectName}.data"
         val configFile= File(path,child)
 
@@ -48,25 +91,31 @@ class ProjectFileManager(private val project: Project=Project()): FileManager() 
         }
 
     }
-    override fun load(dir:File): Project{//TODO Cargar proyecto
 
-        var p=Project()
+
+    fun load(dir:File,context: Context): Project{//TODO Cargar proyecto
+
+        var p=Project(context)
         try{
-            p= readDataFile(dir)!!
+            p= readDataFile(dir,context)!!
         }
         catch (e:Exception){
             e.printStackTrace()
         }
 
+        //leer tracks
 
-
-
-
+        val fileMan= TrackFileManager()
+        for(i in p.trackList.indices){
+            if (p.trackList[i].filePath.exists()){
+                p.trackList[i]=fileMan.load(p.trackList[i].filePath)
+            }
+        }
 
         return p
     }
 
-    override fun readDataFile(dir:File): Project?{
+    override fun readDataFile(dir:File,context:Context): Project?{
 
         val dataFile=File("$dir/${dir.name}.data")
 
@@ -89,7 +138,8 @@ class ProjectFileManager(private val project: Project=Project()): FileManager() 
                 var t="track$i"
                 while(dataString.search(t)!=null){
 
-                    val track=Track(trackName = dataString.search(t)!!, filePath = File("$dir/$t"))
+                    val trackName=dataString.search(t)!!
+                    val track=Track(trackName = trackName, filePath = File("$dir/$trackName"))
 
                     trackList.add(track)
 
@@ -108,7 +158,7 @@ class ProjectFileManager(private val project: Project=Project()): FileManager() 
                 Log.println(Log.DEBUG,"DataString",dataString.value)
             }
 
-            val p= Project(name,dir,name)
+            val p= Project(fileName=name, filePath = dir,context=context,projectName=name)
             p.trackList=trackList
             p.isFav=isFav
 
@@ -120,18 +170,6 @@ class ProjectFileManager(private val project: Project=Project()): FileManager() 
         }
     }
 
-
-    private fun format(): String{//TODO BORRAR METODO
-        val configString=ConfigString()
-        configString.addKey(key="name",value=project.projectName)
-        for(i in project.trackList.indices){
-            configString.addKey(key= "track$i",project.trackList[i].trackName)
-        }
-        configString.addKey("fav",project.isFav.toString())
-
-        return configString.value
-
-    }
 
 
 
