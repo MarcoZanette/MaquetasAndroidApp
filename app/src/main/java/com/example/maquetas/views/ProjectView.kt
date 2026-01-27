@@ -47,9 +47,11 @@ import com.example.maquetas.viewmodels.ProjectViewmodelFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.maquetas.composables.ExportFilePopup
 import com.example.maquetas.composables.NewItemPopup
 import com.example.maquetas.composables.TrackCard
 import com.example.maquetas.models.Track
+import java.io.File
 
 class ProjectView (val context:Context){
 
@@ -60,6 +62,7 @@ class ProjectView (val context:Context){
 
         val viewmodel= viewModel<ProjectViewModel>(factory= ProjectViewmodelFactory(project = project))//Borre dependencias, puede no funcionar
         var showNewTrackPopup by remember { mutableStateOf(false) }
+        var showExportPopup by remember {mutableStateOf(false)}
 
         NewItemPopup(
             title = stringResource(R.string.createNewTrackTitle),
@@ -73,6 +76,20 @@ class ProjectView (val context:Context){
                 viewmodel.addNewTrack(project.trackList[project.trackList.size-1])
                 },
             state = viewmodel.newTrackName
+        )
+
+        ExportFilePopup(
+            navigateTo = {
+
+            },
+            onConfirm = {
+
+            },
+            onDismiss = {
+
+            },
+            dirList = context.cacheDir.listFiles()!!.toList(),
+            showDialog = showExportPopup
         )
 
         val iconModifier=Modifier
@@ -108,12 +125,10 @@ class ProjectView (val context:Context){
 
                                 } else//TODO parar la grabacion
                                 {
-                                    try
-                                    {
+                                    try {
                                         project.stopRecording(recordingTrack)
                                         recordingTrack = -1
-                                    }
-                                    catch (e:Exception){
+                                    } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
                                 }
@@ -136,7 +151,7 @@ class ProjectView (val context:Context){
                         tint= MaterialTheme.colorScheme.onSurface,
                         modifier=iconModifier
                             .align(Alignment.Center)
-                            .clickable(onClick = {})
+                            .clickable(onClick = {showExportPopup=true})
                     )}
                     MenuItem{Icon(
                         painter =painterResource(R.drawable.play),
@@ -224,6 +239,8 @@ class ProjectView (val context:Context){
 
 
     }
+
+
 
     @Composable
     fun MainProjectView(onNavigateUp:()->Unit){
