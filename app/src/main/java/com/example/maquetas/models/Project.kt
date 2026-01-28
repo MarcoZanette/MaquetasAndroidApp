@@ -71,8 +71,12 @@ class Project(val fileName:String="",val context:Context, val filePath: File=Fil
 
 
     fun saveToExternal(dir:File):Boolean{
+
+        val saved=fileMan.saveToExternal(dir)
+
+
         //TODO Retornar si se guardo con exito, mostrar un cartel en la vista en tal caso
-        return false
+        return saved
     }
 
     fun getDataString(): ConfigString{

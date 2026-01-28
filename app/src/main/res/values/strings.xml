@@ -13,4 +13,5 @@
     <string name="favorite">Añadir a favoritos</string>
     <string name="delete">Eliminar</string>
     <string name="save">Guardar</string>
+    <string name="fileSaved">Guardado con éxito</string>
 </resources>

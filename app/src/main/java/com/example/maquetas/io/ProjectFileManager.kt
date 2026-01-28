@@ -22,7 +22,19 @@ class ProjectFileManager(private val project: Project): FileManager() {
         }
     }
 
-    fun saveToExternal(dir:File){
+    fun saveToExternal(dir:File): Boolean{
+
+        try {
+
+            val f=File(dir,project.fileName)
+            project.filePath.copyRecursively(f,true)
+        }catch (e: Exception
+        ){
+            e.printStackTrace()
+            return false
+        }
+        return true
+
         //TODO -- Agregar parametros a save y usarla para esta misma funcion?
     }
 

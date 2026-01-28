@@ -19,6 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,11 +30,11 @@ import com.example.maquetas.R
 import java.io.File
 
 @Composable
-fun ExportFilePopup (navigateTo:(File)->Unit,onConfirm:(file:File)-> Unit, onDismiss:()->Unit,showDialog: Boolean,dir:File){
+fun ExportFilePopup (navigateTo:(File)->Unit, onConfirm: (file:File)-> Unit, onDismiss:()->Unit, showDialog: Boolean, dir:File){
 
     if(showDialog){
 
-        var selectedDir:File?=null
+        var selectedDir:File?= dir
         Dialog(
             onDismissRequest = {onDismiss()}) {
 
@@ -67,7 +68,9 @@ fun ExportFilePopup (navigateTo:(File)->Unit,onConfirm:(file:File)-> Unit, onDis
                         items(items = dir.listFiles()!!.toList()) { d -> //TODO error al navegar a directorios vacios o que no tienen permisos (La app no deberia permitir al usuario entrar en ellos)
                             Text(
                                 text = d.name,
-                                modifier = Modifier.clickable(onClick = { navigateTo(d) })
+                                modifier = Modifier.clickable(onClick = {
+                                    selectedDir=d
+                                    navigateTo(d) })
                             )
                         }
                     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Paint
 import android.os.Environment
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -85,11 +86,23 @@ class ProjectView (val context:Context){
         ExportFilePopup(
             navigateTo = {
                     d->
-                //reenviar el "dir"
+                //actualiza el "dir"
                 defaultExternalDir.value=d
             },
             onConfirm = {
-                //guardar archivo
+                //guardar archivo dentro del directorio "d"
+                d->
+                val saved=project.saveToExternal(d)
+
+                if(saved){
+
+                    Toast.makeText(context, "Guardado con éxito", Toast.LENGTH_SHORT).show()
+                    showExportPopup=false
+                }
+                    else{
+                    Toast.makeText(context, "No se pudo guardar correctamente el archivo", Toast.LENGTH_SHORT).show()
+                }
+
             },
             onDismiss = {
                 showExportPopup=false
