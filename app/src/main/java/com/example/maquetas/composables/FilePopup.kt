@@ -29,7 +29,7 @@ import com.example.maquetas.R
 import java.io.File
 
 @Composable
-fun ExportFilePopup (navigateTo:(File)->Unit,onConfirm:(file:File)-> Unit, onDismiss:()->Unit,showDialog: Boolean,dirList:List<File>){
+fun ExportFilePopup (navigateTo:(File)->Unit,onConfirm:(file:File)-> Unit, onDismiss:()->Unit,showDialog: Boolean,dir:File){
 
     if(showDialog){
 
@@ -45,7 +45,17 @@ fun ExportFilePopup (navigateTo:(File)->Unit,onConfirm:(file:File)-> Unit, onDis
                             Icon(
                                 painter = painterResource(R.drawable.arrow_back),
                                 contentDescription = stringResource(R.string.arrow_back),
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clickable(onClick = {
+                                        if (dir.parentFile != null) {
+                                            navigateTo(dir.parentFile!!)
+                                        }
+                                        else{
+                                            Log.println(Log.INFO,"Dir nav error","No se puede encontrar el directorio padre.")
+                                        }
+
+                                    })
                             )
                         }
 
@@ -54,10 +64,10 @@ fun ExportFilePopup (navigateTo:(File)->Unit,onConfirm:(file:File)-> Unit, onDis
                     }
                     LazyColumn() {
                         //listado de subdirectorios actuales
-                        items(items = dirList) { dir ->
+                        items(items = dir.listFiles()!!.toList()) { d -> //TODO error al navegar a directorios vacios o que no tienen permisos (La app no deberia permitir al usuario entrar en ellos)
                             Text(
-                                text = dir.name,
-                                modifier = Modifier.clickable(onClick = { navigateTo(dir) })
+                                text = d.name,
+                                modifier = Modifier.clickable(onClick = { navigateTo(d) })
                             )
                         }
                     }
@@ -95,12 +105,11 @@ fun ImportFilePopup(){
 private fun exportPreview() {
 
     val f=File("/file")
-    f.mkdir()
+
 
     val f2=File("/file/a")
-    f2.mkdir()
 
-    val l=listOf(f,f2)
-    ExportFilePopup(onConfirm = {}, onDismiss = {},showDialog=true, dirList = l, navigateTo = {})
+
+    ExportFilePopup(onConfirm = {}, onDismiss = {},showDialog=true, dir = f, navigateTo = {})
 
 }

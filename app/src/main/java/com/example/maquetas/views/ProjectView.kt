@@ -3,6 +3,7 @@ package com.example.maquetas.views
 import android.Manifest
 import android.content.Context
 import android.graphics.Paint
+import android.os.Environment
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -56,6 +57,9 @@ import java.io.File
 class ProjectView (val context:Context){
 
     private var recordingTrack=-1
+    private var defaultExternalDir= mutableStateOf(Environment.getExternalStorageDirectory())
+
+    //TODO deberia cambiarse en la configuracion de la app
 
     @Composable
     fun MainProjectView(project: Project,onNavigateUp:()->Unit,requestPermission:(permission:String)->Unit){
@@ -80,15 +84,17 @@ class ProjectView (val context:Context){
 
         ExportFilePopup(
             navigateTo = {
-
+                    d->
+                //reenviar el "dir"
+                defaultExternalDir.value=d
             },
             onConfirm = {
-
+                //guardar archivo
             },
             onDismiss = {
-
+                showExportPopup=false
             },
-            dirList = context.cacheDir.listFiles()!!.toList(),
+            dir = defaultExternalDir.value,
             showDialog = showExportPopup
         )
 
@@ -123,8 +129,7 @@ class ProjectView (val context:Context){
                                         e.printStackTrace()
                                     }
 
-                                } else//TODO parar la grabacion
-                                {
+                                } else {
                                     try {
                                         project.stopRecording(recordingTrack)
                                         recordingTrack = -1
@@ -151,7 +156,7 @@ class ProjectView (val context:Context){
                         tint= MaterialTheme.colorScheme.onSurface,
                         modifier=iconModifier
                             .align(Alignment.Center)
-                            .clickable(onClick = {showExportPopup=true})
+                            .clickable(onClick = { showExportPopup = true })
                     )}
                     MenuItem{Icon(
                         painter =painterResource(R.drawable.play),
