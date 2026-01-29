@@ -3,7 +3,6 @@ package com.example.maquetas.views
 import android.content.Context
 import android.os.Environment
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.input.TextFieldState
@@ -15,12 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHost
-import androidx.navigation.compose.NavHost
 import com.example.maquetas.models.Project
 import com.example.maquetas.R
-import com.example.maquetas.composables.ExportFilePopup
+import com.example.maquetas.composables.SearchFilePopup
 import com.example.maquetas.composables.MenuBar
 import com.example.maquetas.composables.MenuItem
 import com.example.maquetas.composables.NewItemPopup
@@ -50,7 +46,7 @@ class MenuView(val context: Context) {
                     state = newItemState
                 )
 
-            ExportFilePopup(navigateTo = {d->currentExternalDir.value=d},
+            SearchFilePopup(navigateTo = { d->currentExternalDir.value=d},
                 onConfirm = {
                     d->
                     val fm= ProjectFileManager(context)

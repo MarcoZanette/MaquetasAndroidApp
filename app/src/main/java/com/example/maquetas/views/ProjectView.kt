@@ -34,8 +34,7 @@ import com.example.maquetas.composables.MenuItem
 import com.example.maquetas.viewmodels.ProjectViewModel
 import com.example.maquetas.viewmodels.ProjectViewmodelFactory
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.maquetas.composables.ExportFilePopup
-import com.example.maquetas.composables.ImportFilePopup
+import com.example.maquetas.composables.SearchFilePopup
 import com.example.maquetas.composables.NewItemPopup
 import com.example.maquetas.composables.TrackCard
 
@@ -68,7 +67,7 @@ class ProjectView (val context:Context){
             state = viewmodel.newTrackName
         )
 
-        ImportFilePopup(
+        SearchFilePopup(//import file, deberia ser capaz de importar archivos de audio
             navigateTo = {
                 d->
                 currentExternalDir.value=d
@@ -83,7 +82,7 @@ class ProjectView (val context:Context){
             showDialog = showImportPopup
         )
 
-        ExportFilePopup(
+        SearchFilePopup(
             navigateTo = {
                     d->
                 //actualiza el "dir"
