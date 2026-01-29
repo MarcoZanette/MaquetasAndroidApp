@@ -2,23 +2,16 @@ package com.example.maquetas.views
 
 import android.Manifest
 import android.content.Context
-import android.graphics.Paint
 import android.os.Environment
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.tappableElementIgnoringVisibility
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,39 +19,30 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.maquetas.models.Project
 import com.example.maquetas.R
 import com.example.maquetas.composables.MenuBar
 import com.example.maquetas.composables.MenuItem
 import com.example.maquetas.viewmodels.ProjectViewModel
 import com.example.maquetas.viewmodels.ProjectViewmodelFactory
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.maquetas.composables.ExportFilePopup
+import com.example.maquetas.composables.ImportFilePopup
 import com.example.maquetas.composables.NewItemPopup
 import com.example.maquetas.composables.TrackCard
-import com.example.maquetas.models.Track
-import java.io.File
 
 class ProjectView (val context:Context){
 
     private var recordingTrack=-1
-    private var defaultExternalDir= mutableStateOf(Environment.getExternalStorageDirectory())
+    private var currentExternalDir= mutableStateOf(Environment.getExternalStorageDirectory())
 
     //TODO deberia cambiarse en la configuracion de la app
 
@@ -68,6 +52,7 @@ class ProjectView (val context:Context){
         val viewmodel= viewModel<ProjectViewModel>(factory= ProjectViewmodelFactory(project = project))//Borre dependencias, puede no funcionar
         var showNewTrackPopup by remember { mutableStateOf(false) }
         var showExportPopup by remember {mutableStateOf(false)}
+        var showImportPopup by remember {mutableStateOf(false)}
 
         NewItemPopup(
             title = stringResource(R.string.createNewTrackTitle),
@@ -83,11 +68,26 @@ class ProjectView (val context:Context){
             state = viewmodel.newTrackName
         )
 
+        ImportFilePopup(
+            navigateTo = {
+                d->
+                currentExternalDir.value=d
+            },
+            onConfirm = {
+
+            },
+            onDismiss = {
+
+            },
+            dir=currentExternalDir.value,
+            showDialog = showImportPopup
+        )
+
         ExportFilePopup(
             navigateTo = {
                     d->
                 //actualiza el "dir"
-                defaultExternalDir.value=d
+                currentExternalDir.value=d
             },
             onConfirm = {
                 //guardar archivo dentro del directorio "d"
@@ -107,7 +107,7 @@ class ProjectView (val context:Context){
             onDismiss = {
                 showExportPopup=false
             },
-            dir = defaultExternalDir.value,
+            dir = currentExternalDir.value,
             showDialog = showExportPopup
         )
 
@@ -161,7 +161,7 @@ class ProjectView (val context:Context){
                         tint= MaterialTheme.colorScheme.onSurface,
                         modifier=iconModifier
                             .align(Alignment.Center)
-                            .clickable(onClick = {})
+                            .clickable(onClick = { showImportPopup=true})
                     )}
                     MenuItem{Icon(
                         painter=painterResource(R.drawable.export_file),

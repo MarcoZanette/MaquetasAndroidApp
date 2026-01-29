@@ -51,9 +51,12 @@ fun ExportFilePopup (navigateTo:(File)->Unit, onConfirm: (file:File)-> Unit, onD
                                     .clickable(onClick = {
                                         if (dir.parentFile != null) {
                                             navigateTo(dir.parentFile!!)
-                                        }
-                                        else{
-                                            Log.println(Log.INFO,"Dir nav error","No se puede encontrar el directorio padre.")
+                                        } else {
+                                            Log.println(
+                                                Log.INFO,
+                                                "Dir nav error",
+                                                "No se puede encontrar el directorio padre."
+                                            )
                                         }
 
                                     })
@@ -70,7 +73,12 @@ fun ExportFilePopup (navigateTo:(File)->Unit, onConfirm: (file:File)-> Unit, onD
                                 text = d.name,
                                 modifier = Modifier.clickable(onClick = {
                                     selectedDir=d
-                                    navigateTo(d) })
+                                    if(d.isDirectory)
+                                        {
+                                        navigateTo(d)
+                                    }
+                                    }
+                                )
                             )
                         }
                     }
@@ -99,8 +107,87 @@ fun ExportFilePopup (navigateTo:(File)->Unit, onConfirm: (file:File)-> Unit, onD
 }
 
 @Composable
-fun ImportFilePopup(){
+fun ImportFilePopup(navigateTo:(File)->Unit, onConfirm: (file:File)-> Unit, onDismiss:()->Unit, showDialog: Boolean, dir:File){
 
+
+    if(showDialog){
+        var selectedDir:File?= dir
+        Dialog(
+            onDismissRequest = {onDismiss()}) {
+
+
+            Surface(color=MaterialTheme.colorScheme.surface) {
+                Column() {
+                    MenuBar() {
+                        MenuItem() {
+                            Icon(
+                                painter = painterResource(R.drawable.arrow_back),
+                                contentDescription = stringResource(R.string.arrow_back),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clickable(onClick = {
+                                        if (dir.parentFile != null) {
+                                            navigateTo(dir.parentFile!!)
+                                        } else {
+                                            Log.println(
+                                                Log.INFO,
+                                                "Dir nav error",
+                                                "No se puede encontrar el directorio padre."
+                                            )
+                                        }
+
+                                    })
+                            )
+                        }
+
+                        Text(text = "Texto de ejemplo", color = MaterialTheme.colorScheme.onPrimary)
+
+                    }
+                    LazyColumn() {
+                        //listado de subdirectorios actuales
+                        items(items = dir.listFiles()!!.toList()) { d -> //TODO error al navegar a directorios vacios o que no tienen permisos (La app no deberia permitir al usuario entrar en ellos)
+
+
+
+                            Text(
+                                text = d.name,
+                                modifier = Modifier.clickable(onClick = {
+
+                                    if(d.isDirectory)
+                                    {
+                                        selectedDir = d
+                                        navigateTo(d)
+                                    }else{
+                                    selectedDir=d
+                                }
+                                })
+
+                            )
+                        }
+                    }
+                    TextButton(onClick = {
+                        if (selectedDir != null) {
+
+                                onConfirm(selectedDir)
+                        } else {
+                            //TODO notificar que no se ha seleccionado ningun directorio
+                            Log.println(
+                                Log.WARN,
+                                "No se ha guardado el archivo",
+                                "No se ha seleccionado ningun directorio, por lo tanto el archivo no puede ser exportado"
+                            )
+                        }
+                    }
+                    ) {
+                        Text("Cargar")
+                    }
+
+                }
+            }
+
+        }
+
+    }
 }
 
 @Preview

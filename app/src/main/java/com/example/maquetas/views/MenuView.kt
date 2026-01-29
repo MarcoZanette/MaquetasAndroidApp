@@ -1,6 +1,7 @@
 package com.example.maquetas.views
 
 import android.content.Context
+import android.os.Environment
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +20,12 @@ import androidx.navigation.NavHost
 import androidx.navigation.compose.NavHost
 import com.example.maquetas.models.Project
 import com.example.maquetas.R
+import com.example.maquetas.composables.ExportFilePopup
 import com.example.maquetas.composables.MenuBar
 import com.example.maquetas.composables.MenuItem
 import com.example.maquetas.composables.NewItemPopup
 import com.example.maquetas.composables.ProjectCard
+import com.example.maquetas.io.ProjectFileManager
 
 class MenuView(val context: Context) {
 
@@ -33,7 +36,8 @@ class MenuView(val context: Context) {
         var pd= Project(fileName = "asd",projectName = "Proyecto de ejemplo",context=context)
         //--------------
         var showNewProjectPopUp= remember{mutableStateOf(false)}
-        var showLoadProjectPopUp=false
+        var showLoadProjectPopUp=remember{mutableStateOf(false)}
+        var currentExternalDir=remember{mutableStateOf(Environment.getExternalStorageDirectory())}
 
         Surface(color = colorResource(R.color.white)) {
                 var newItemState= remember{ TextFieldState() }
@@ -45,6 +49,21 @@ class MenuView(val context: Context) {
                     onConfirm = {onCreateNewProject(newItemState.text.toString())},
                     state = newItemState
                 )
+
+            ExportFilePopup(navigateTo = {d->currentExternalDir.value=d},
+                onConfirm = {
+                    d->
+                    val fm= ProjectFileManager(context)
+                    val p =fm.load(d,context)
+                    onProjectLoad(p)
+                },
+                onDismiss = {
+                    showLoadProjectPopUp.value=false
+                },
+                showDialog = showLoadProjectPopUp.value,
+                dir=currentExternalDir.value)
+
+
                 Column(modifier = Modifier.fillMaxSize()) {
                     MenuBar {
                         MenuItem(painter = painterResource(R.drawable.ic_launcher_foreground), onClick = {})
@@ -52,6 +71,11 @@ class MenuView(val context: Context) {
                             Text(text="New",modifier=Modifier.clickable(onClick= {
                                 showNewProjectPopUp.value = true
                             })) //(onClick = onCreateNewProject))
+                        }
+                        MenuItem{
+                            Text(text="Load",modifier=Modifier.clickable(onClick = {
+                                showLoadProjectPopUp.value=true
+                            }))
                         }
                     }
 
