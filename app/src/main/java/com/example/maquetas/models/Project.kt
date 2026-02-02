@@ -1,10 +1,12 @@
 package com.example.maquetas.models
 
 import android.content.Context
+import android.util.Log
 import com.example.maquetas.io.ConfigString
 import com.example.maquetas.io.ProjectFileManager
 import com.example.maquetas.models.ProjectObject
 import java.io.File
+import java.util.Timer
 
 //FILE PATH DEBE REFERENCIAR UN DIRECTORIO, NO UN ARCHIVO
 class Project(val fileName:String="",val context:Context, val filePath: File=File(""),val projectName:String="New Project"): ProjectObject(filePath,fileName) {
@@ -78,7 +80,6 @@ class Project(val fileName:String="",val context:Context, val filePath: File=Fil
         val saved=fileMan.saveToExternal(dir)
 
 
-        //TODO Retornar si se guardo con exito, mostrar un cartel en la vista en tal caso
         return saved
     }
 
@@ -96,13 +97,53 @@ class Project(val fileName:String="",val context:Context, val filePath: File=Fil
         return dataString
     }
 
-    fun play() {
+    fun play(onCompletion:()->Unit) {
 
-        for(t in trackList){
-            t.play()
+        var longestTrackId=-1//
+        var longest=0
+
+        //identificar la pista mas larga
+
+
+        for(i in trackList.indices){
+            val track=trackList[i]
+            val len=track.getDuration()
+
+            if(len>longest){
+             longest=len
+             longestTrackId=i
+            }
+
         }
 
+        for(i in trackList.indices){//play() de todas las pistas
+
+            val track=trackList[i]
+
+            try
+            {
+
+                if (longestTrackId == i) {//pista mas larga, evento al finalizar el playback
+                    track.play(onCompletion)
+                } else {
+                    track.play({
+
+                    })
+                }
+            }catch (e: IndexOutOfBoundsException){
+                Log.println(Log.WARN,"LongestTrackId out of bounds","Current index $longestTrackId")
+                e.printStackTrace()
+
+            }
+        }
     }
+
+    fun stop(){
+        for (t in trackList){
+            t.stop()
+        }
+    }
+
 
 }
 

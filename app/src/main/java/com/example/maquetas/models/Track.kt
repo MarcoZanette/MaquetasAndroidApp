@@ -9,12 +9,13 @@ import java.io.File
 
 //FILE PATH DEBE REFERENCIAR UN DIRECTORIO, NO UN ARCHIVO
 class Track(val trackName:String="", val filePath: File): ProjectObject(filePath,trackName) {
-    private val activeTake=0
+    val activeTake=0
 
     //esta clase NO debe ocuparse de la persistencia de archivos, esto es trabajo del TrackFileManager
     var trackFileMan= TrackFileManager(this)
     var takeList=trackFileMan.getTakeList()
     var recorder= Recorder()
+    var player: Player=Player()
 
     override var objectName=trackName
 
@@ -75,11 +76,23 @@ class Track(val trackName:String="", val filePath: File): ProjectObject(filePath
 
     }
 
-    fun play() {
-        val player: Player=Player()
+    fun play(onCompletion:()->Unit){
 
+        player=Player()
         player.play(takeList[activeTake].filePath)//TODO verificar funcionamiento de la lista de takes
 
+        player.setOnCompletionListener {
+            onCompletion()
+        }
+    }
+
+    fun stop(){
+        player.stop()
+    }
+
+
+    fun getDuration():Int{
+        return takeList[activeTake].getDuration()
     }
 
 

@@ -178,14 +178,27 @@ class ProjectView (val context:Context){
                     )}
 
                     MenuItem{Icon(
-                        painter =painterResource(R.drawable.play),
+                        painter =playbackPainter,
                         contentDescription = stringResource(R.string.play),
                         tint= MaterialTheme.colorScheme.onSurface,
                         modifier=iconModifier
                             .align(Alignment.Center)
                             .clickable(onClick = {
-                                playing.value=true
-                                project.play()
+
+                                if(!playing.value){
+                                    playing.value = true
+
+                                    project.play(onCompletion = {//evento lanzado al completar el playback
+                                        playing.value = false
+                                    }
+
+                                    )
+                                }
+                                else{
+                                    //TODO stop playback
+                                    project.stop()
+                                    playing.value=false
+                                }
 
                             })
                     )}
