@@ -101,6 +101,7 @@ class Project(val fileName:String="",val context:Context, val filePath: File=Fil
         for(t in trackList){
             t.play()
         }
+
     }
 
 }

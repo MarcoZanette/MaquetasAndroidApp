@@ -19,11 +19,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,7 +42,7 @@ import com.example.maquetas.composables.TrackCard
 
 class ProjectView (val context:Context){
 
-    private var recordingTrack=-1
+
     private var currentExternalDir= mutableStateOf(Environment.getExternalStorageDirectory())
 
     //TODO deberia cambiarse en la configuracion de la app
@@ -52,6 +54,8 @@ class ProjectView (val context:Context){
         var showNewTrackPopup by remember { mutableStateOf(false) }
         var showExportPopup by remember {mutableStateOf(false)}
         var showImportPopup by remember {mutableStateOf(false)}
+        var recordingTrack=remember { mutableIntStateOf(-1) }
+        var playing=remember { mutableStateOf(false) }
 
         NewItemPopup(
             title = stringResource(R.string.createNewTrackTitle),
@@ -67,7 +71,7 @@ class ProjectView (val context:Context){
             state = viewmodel.newTrackName
         )
 
-        SearchFilePopup(//import file, deberia ser capaz de importar archivos de audio
+        SearchFilePopup(//import file, deberia ser capaz de importar archivos de audio TODO
             navigateTo = {
                 d->
                 currentExternalDir.value=d
@@ -110,6 +114,8 @@ class ProjectView (val context:Context){
             showDialog = showExportPopup
         )
 
+        val playbackPainter:Painter=if(!playing.value){painterResource(R.drawable.play)}else{painterResource(R.drawable.stop)}
+        val recordPainter:Painter= if(recordingTrack.intValue==-1){ painterResource(R.drawable.record) }else{painterResource(R.drawable.stop_recording)}
         val iconModifier=Modifier
             .fillMaxSize()
             .aspectRatio(1f)
@@ -125,9 +131,9 @@ class ProjectView (val context:Context){
                             .clickable(onClick = { onNavigateUp() })
                     ) }
                     MenuItem { Icon(
-                        painter=painterResource(R.drawable.record),
+                        painter=recordPainter,
                         contentDescription = stringResource(R.string.record),
-                        tint=if(recordingTrack==-1)MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.inverseSurface ,
+                        tint=MaterialTheme.colorScheme.onSurface,
                         modifier=iconModifier
                             .align(Alignment.Center)
                             .clickable(onClick = {
@@ -136,15 +142,15 @@ class ProjectView (val context:Context){
 
                                     try {
                                         project.record(viewmodel.selectedTrack.intValue)
-                                        recordingTrack = viewmodel.selectedTrack.intValue
+                                        recordingTrack.intValue = viewmodel.selectedTrack.intValue
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
 
                                 } else {
                                     try {
-                                        project.stopRecording(recordingTrack)
-                                        recordingTrack = -1
+                                        project.stopRecording(recordingTrack.intValue)
+                                        recordingTrack.intValue = -1
                                     } catch (e: Exception) {
                                         e.printStackTrace()
                                     }
@@ -160,7 +166,7 @@ class ProjectView (val context:Context){
                         tint= MaterialTheme.colorScheme.onSurface,
                         modifier=iconModifier
                             .align(Alignment.Center)
-                            .clickable(onClick = { showImportPopup=true})
+                            .clickable(onClick = { showImportPopup = true })
                     )}
                     MenuItem{Icon(
                         painter=painterResource(R.drawable.export_file),
@@ -170,6 +176,7 @@ class ProjectView (val context:Context){
                             .align(Alignment.Center)
                             .clickable(onClick = { showExportPopup = true })
                     )}
+
                     MenuItem{Icon(
                         painter =painterResource(R.drawable.play),
                         contentDescription = stringResource(R.string.play),
@@ -177,9 +184,12 @@ class ProjectView (val context:Context){
                         modifier=iconModifier
                             .align(Alignment.Center)
                             .clickable(onClick = {
+                                playing.value=true
                                 project.play()
+
                             })
                     )}
+
                     MenuItem{Icon(
                         painter=painterResource(R.drawable.add),
                         contentDescription = stringResource(R.string.addTrack),
